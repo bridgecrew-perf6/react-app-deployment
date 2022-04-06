@@ -294,7 +294,7 @@ const Search = () => {
                   />
                 </div>
                 <div className="col-md-6 text-center m-auto">
-                 <p className=' float-right'><Book size={15}/> User Manual Click <a href=''>here</a></p>
+                 <p className=' float-right'> <Book size={15}/> User Manual Click <a href=''>here</a></p>
                 </div>
               </div>
             </div>

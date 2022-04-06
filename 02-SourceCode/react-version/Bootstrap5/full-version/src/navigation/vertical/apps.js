@@ -5,12 +5,7 @@ export default [
   {
     header: 'Apps & Pages'
   },
-  // {
-  //   id: 'search',
-  //   title: 'Search',
-  //   icon: <Search size={20} />,
-  //   navLink: '/apps/search'
-  // },
+
   {
     id: 'email',
     title: 'Email',
