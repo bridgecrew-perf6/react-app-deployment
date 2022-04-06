@@ -201,7 +201,7 @@ const Search = () => {
               <div className="card-header"></div>
               <div className="card-body row">
                 <div className="col-md-6 mb-1">
-                  <label className='form-label'>Location</label>
+                  <label className='form-label'>  <span className='astrix'>*</span> Location</label>
                   <Select
                     theme={selectThemeColors}
                     className='react-select'
@@ -213,7 +213,7 @@ const Search = () => {
                 </div>
 
                 <div className="col-md-6 mb-1">
-                  <label className='form-label'>Select Field</label>
+                  <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
                   <Select
                     theme={selectThemeColors}
                     className='react-select'
@@ -226,8 +226,9 @@ const Search = () => {
                 </div>
 
                 <div className="col-md-6 mb-1 mt-1">
-                  <label className='form-label'>
-                    Catalog, Product or Part Number
+                  <label className='form-label w-100'>
+                   <span className='astrix'>*</span> Catalog, Product or Part Number <span className='f-10 float-right'>Solenoid Values only</span>
+
                   </label>
                   <Select
                     theme={selectThemeColors}
@@ -239,19 +240,18 @@ const Search = () => {
                   />
 
                   {/* <input type='text' id='basicInput' className='form-control' placeholder='Enter Catalog, Product or Part Number' /> */}
-                  <p className='f-10 float-right'>Solenoid Values only</p>
                 </div>
                
-                <div className="col-md-6 mb-1 row mt-1  d-none" >
+                <div className="col-md-6 mb-1 row mt-1 d-none" >
                 <label className='form-label'>
                    Range
                   </label>
                 <div className='col-md-6 '>
-                  <label className='form-label'>Min</label>
+                  {/* <label className='form-label'>Min</label> */}
                   <input type='text' id='basicInput' className='form-control' placeholder='Min Value' />
                 </div>
                 <div className='col-md-6 mb-1'>
-                  <label className='form-label'>Max</label>
+                  {/* <label className='form-label'>Max</label> */}
                   <input type='text' id='basicInput' className='form-control' placeholder='Max Value' />
                 </div>
                 </div>
