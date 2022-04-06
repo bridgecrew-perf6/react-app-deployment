@@ -1,11 +1,11 @@
 // ** Icons Import
-import { Home, Circle } from 'react-feather'
+import { Home, Circle, Database } from 'react-feather'
 
 export default [
   {
     id: 'productsearch',
     title: 'Product Search',
-    icon: <Circle size={20} />,
+    icon: <Database size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
     navLink: '/productsearch/productsearch'
