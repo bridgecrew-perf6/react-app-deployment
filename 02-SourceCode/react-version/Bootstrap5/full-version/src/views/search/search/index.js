@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment } from 'react'
+import { Link } from 'react-router-dom'
 
 // ** Icons Imports
 import Select from 'react-select'
@@ -27,7 +28,7 @@ import { Book } from 'react-feather'
 // import { List } from 'react-feather'
 
 // ** Reactstrap Imports
-import { Row, Col, Button } from 'reactstrap'
+import { Row, Col, Button, Breadcrumb, BreadcrumbItem  } from 'reactstrap'
 import Breadcrumbs from '@components/breadcrumbs'
 import '@styles/base/pages/ui-feather.scss'
 
@@ -193,7 +194,21 @@ const Search = () => {
 
   return (
     <div id='search'>
-      <Breadcrumbs title='Search' data={[{ title: 'Search' }]} />
+      {/* <Breadcrumbs  title='Search' data={[{ title: 'Search' }]} /> */}
+      <div class="">
+        <h4 class="card-title">Search</h4>
+      </div>
+      <Breadcrumb className='mb-1'>
+        <BreadcrumbItem>
+          <Link to='#'> Home </Link>
+        </BreadcrumbItem>
+        {/* <BreadcrumbItem>
+          <Link to='#'> Search </Link>
+        </BreadcrumbItem> */}
+        <BreadcrumbItem active>
+          <span> Search </span>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <Row className='match-height'>
         <Col sm='12'>
           <div className="col-md-12 col-lg-12">

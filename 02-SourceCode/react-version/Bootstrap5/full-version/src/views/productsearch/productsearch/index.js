@@ -1,5 +1,6 @@
 // ** React Imports
 import { Fragment, useState} from 'react'
+import { Link } from 'react-router-dom'
 
 // ** Icons Imports
 // import Select from 'react-select'
@@ -35,8 +36,8 @@ import DataTable from 'react-data-table-component'
 
 
 // ** Reactstrap Imports
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col} from 'reactstrap'
-import Breadcrumbs from '@components/breadcrumbs'
+import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
+// import Breadcrumbs from '@components/breadcrumbs'
 import '@styles/base/pages/ui-feather.scss'
 import '@styles/react/apps/app-invoice.scss'
 
@@ -311,7 +312,21 @@ const ProductSearch = () => {
 
   return (
     <div id='productsearch'>
-      <Breadcrumbs title='Product Search' data={[{ title: 'Proudct Search' }]} />
+      {/* <Breadcrumbs title='Product Search' data={[{ title: 'Proudct Search' }]} /> */}
+      <div class="">
+        <h4 class="card-title">Product Search</h4>
+      </div>
+      <Breadcrumb className='mb-1'>
+        <BreadcrumbItem>
+          <Link to='#'> Home </Link>
+        </BreadcrumbItem>
+        {/* <BreadcrumbItem>
+          <Link to='#'> Search </Link>
+        </BreadcrumbItem> */}
+        <BreadcrumbItem active>
+          <span> Product Search </span>
+        </BreadcrumbItem>
+      </Breadcrumb>
       <Row className='match-height'>
         <Col sm='12'>
         <Card>
