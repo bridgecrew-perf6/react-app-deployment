@@ -336,9 +336,8 @@ const ProductSearch = () => {
         <CardBody>
           <Row className='mt-1 mb-50'>
             <Col lg='4' md='6' className='mb-1'>
-              <label className='form-label' for='catalog/product'>
+              <label className='form-label' for='catalog/product' />
                 Catalog/Product #:
-              </label>
               <Input id='name' placeholder='' value={searchName} onChange={handleNameFilter} />
             </Col>
             {/* <Col lg='4' md='6' className='mb-1'>
@@ -359,9 +358,8 @@ const ProductSearch = () => {
               <Input id='post' placeholder='' value={searchPost} onChange={handlePostFilter} />
             </Col>
             <Col lg='4' md='6' className='mb-1'>
-              <label className='form-label' for='drawingversion'>
+              <label className='form-label' for='drawingversion'/>
                 Drawing Version:
-              </label>
               <Input id='city' placeholder='' value={searchCity} onChange={handleCityFilter} />
             </Col>
             {/* <Col lg='4' md='6' className='mb-1'>

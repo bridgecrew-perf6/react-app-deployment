@@ -293,8 +293,8 @@ const Search = () => {
                     isClearable={false}
                   />
                 </div>
-                <div className="col-md-12 mt-1">
-                 <p className='float-right'><Book size={15}/> User Manual Click <a href=''>here</a></p>
+                <div className="col-md-6 text-center m-auto">
+                 <p className=' float-right'><Book size={15}/> User Manual Click <a href=''>here</a></p>
                 </div>
               </div>
             </div>
