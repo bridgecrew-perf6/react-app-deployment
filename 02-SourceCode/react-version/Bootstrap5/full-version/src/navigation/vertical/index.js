@@ -9,8 +9,9 @@
 // import uiElements from './ui-elements'
 import search  from './search'
 import productsearch from './productsearch'
+import graphviewer from './graphviewer'
 
 // ** Merge & Export
 // export default [...dashboards, ...apps, ...pages, ...uiElements, ...forms, ...tables, ...charts, ...others, ...search, ...productsearch]
 
-export default [...search, ...productsearch]
+export default [...search, ...productsearch, ...graphviewer]
