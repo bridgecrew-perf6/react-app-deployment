@@ -38,7 +38,7 @@ const getLayout = {
 const TemplateTitle = ''
 
 // ** Default Route
-const DefaultRoute = '/dashboard/ecommerce'
+const DefaultRoute = '/search/search'
 
 // ** Merge Routes
 const Routes = [
