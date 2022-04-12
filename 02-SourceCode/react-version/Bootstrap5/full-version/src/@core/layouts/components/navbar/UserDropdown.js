@@ -9,8 +9,8 @@ import Avatar from '@components/avatar'
 import { isUserLoggedIn } from '@utils'
 
 // ** Store & Actions
-import { useDispatch } from 'react-redux'
-import { handleLogout } from '@store/authentication'
+// import { useDispatch } from 'react-redux'
+// import { handleLogout } from '@store/authentication'
 
 // ** Third Party Components
 import { User, Mail, CheckSquare, MessageSquare, Settings, CreditCard, HelpCircle, Power } from 'react-feather'
@@ -23,7 +23,7 @@ import defaultAvatar from '@src/assets/images/portrait/small/avatar-s-11.jpg'
 
 const UserDropdown = () => {
   // ** Store Vars
-  const dispatch = useDispatch()
+  // const dispatch = useDispatch()
 
   // ** State
   const [userData, setUserData] = useState(null)
@@ -48,7 +48,8 @@ const UserDropdown = () => {
         <Avatar img={userAvatar} imgHeight='40' imgWidth='40' status='online' />
       </DropdownToggle>
       <DropdownMenu end>
-        <DropdownItem tag={Link} to='/pages/profile'>
+      {/* <DropdownItem tag={Link} to='/pages/profile'> */}
+        <DropdownItem tag={Link} to=''>
           <User size={14} className='me-75' />
           <span className='align-middle'>Profile</span>
         </DropdownItem>
@@ -65,7 +66,9 @@ const UserDropdown = () => {
           <span className='align-middle'>Chats</span>
         </DropdownItem> */}
         <DropdownItem divider />
-        <DropdownItem tag={Link} to='/pages/account-settings'>
+        {/* <DropdownItem tag={Link} to='/pages/account-settings'> */}
+
+        <DropdownItem tag={Link} to=''>
           <Settings size={14} className='me-75' />
           <span className='align-middle'>Settings</span>
         </DropdownItem>
@@ -73,11 +76,16 @@ const UserDropdown = () => {
           <CreditCard size={14} className='me-75' />
           <span className='align-middle'>Pricing</span>
         </DropdownItem> */}
-        <DropdownItem tag={Link} to='/pages/faq'>
+
+{/* <DropdownItem tag={Link} to='/pages/faq'> */}
+
+        <DropdownItem tag={Link} to=''>
           <HelpCircle size={14} className='me-75' />
           <span className='align-middle'>FAQ</span>
         </DropdownItem>
-        <DropdownItem tag={Link} to='/login' onClick={() => dispatch(handleLogout())}>
+        {/* <DropdownItem tag={Link} to='/login' onClick={() => dispatch(handleLogout())}> */}
+
+        <DropdownItem tag={Link} to=''>
           <Power size={14} className='me-75' />
           <span className='align-middle'>Logout</span>
         </DropdownItem>
