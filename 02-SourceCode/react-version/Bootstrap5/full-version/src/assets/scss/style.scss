@@ -1,0 +1,70 @@
+/*================================================================================
+	Item Name: Vuexy - Vuejs, HTML & Laravel Admin Dashboard Template
+	Version: 2.0
+	Author: PIXINVENT
+	Author URL: http://www.themeforest.net/user/pixinvent
+================================================================================
+
+NOTE:
+------
+PLACE HERE YOUR OWN SCSS CODES AND IF NEEDED, OVERRIDE THE STYLES FROM THE OTHER STYLESHEETS.
+WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR STYLES IT'S BETTER LIKE THIS.  */
+
+.vertical-layout .main-menu .navigation a.active {
+	box-shadow: none;
+}
+.main-menu .navbar-header .navbar-brand {
+	margin-top: 0.75rem;
+    margin-left: -7px;
+}
+
+.main-menu .navbar-header .navbar-brand .brand-logo img {
+    max-width: 50px;
+}
+
+.menu-light {
+background-color: #283046 !important;
+}
+
+.main-menu.menu-light .navigation {
+	background-color: #283046 !important;
+
+}
+
+.float-right{
+	float: right;
+}
+
+.main-menu .navbar-header {
+	background-color: #fff;
+}
+
+.main-menu.menu-light .navigation li a {
+    color: #d0d0d0;
+}
+
+.f-10 {
+	font-size: .80rem;
+}
+
+.main-menu .shadow-bottom {
+    margin-top: -0.7rem;
+    background: none; 
+}
+
+.avatar-content {
+	width: 32px;
+    height: 32px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.857rem;
+    border-radius: 50%;
+}
+
+.astrix {
+    color: #ff0000;
+}
+.breadcrumb-right .dropdown {
+    display: none !important;
+}
