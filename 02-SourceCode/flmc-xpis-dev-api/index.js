@@ -131,8 +131,8 @@ joi.string().required(),
 router
 .get("v2/part/:location/:agr_min/:agr_max", function (req, res) {
   var user_input1 = req.pathParams.location;
-  var user_input2 = req.pathParams.agr_min;
-  var user_input3 = req.pathParams.agr_max;
+  var user_input2 = int(req.pathParams.agr_min);
+  var user_input3 = int(req.pathParams.agr_max);
 
   const query = db._query(aql`
       FOR item IN ${partCollection}
@@ -165,8 +165,8 @@ router
 router
 .get("v2/part/:location/:eau_min/:eau_max", function (req, res) {
   var user_input1 = req.pathParams.location;
-  var user_input2 = req.pathParams.eau_min;
-  var user_input3 = req.pathParams.eau_max;
+  var user_input2 = int(req.pathParams.eau_min);
+  var user_input3 = int(req.pathParams.eau_max);
 
   const query = db._query(aql`
       FOR item IN ${partCollection}
@@ -195,12 +195,12 @@ router
 .summary("This endpoint retrieves part(s) by location and eau.")
 .description("This endpoint retrieves part(s) by location and eau.");
 
-//GET method to search for Parts by organization, and EAU
+//GET method to search for Parts by organization, and on hand inventory
 router
 .get("v2/part/:location/:inventory_min/:inventory_max", function (req, res) {
   var user_input1 = req.pathParams.location;
-  var user_input2 = req.pathParams.inventory_min;
-  var user_input3 = req.pathParams.inventory_max;
+  var user_input2 = int(req.pathParams.inventory_min);
+  var user_input3 = int(req.pathParams.inventory_max);
 
   const query = db._query(aql`
       FOR item IN ${partCollection}
@@ -259,3 +259,73 @@ joi.string().required(),
 .response(["application/json"], "Returns Parts by location and drawing_number")
 .summary("This endpoint retrieves part(s) by location and drawing_number.")
 .description("This endpoint retrieves part(s) by location and drawing_number.");
+
+
+//GET method to search for drawing by product_number (hyperlink for drawing number)
+router
+  .get("v2/drawing/:product_number", function (req, res) {
+    var user_input = req.pathParams.product_number;
+    const query = db._query(aql`
+      for item IN ${part_documentCollection}
+      for p in ${partCollection}
+      filter p.product_number == ${user_input.replace(wildcardRegex, "%")}
+      filter item._from == p._id
+      for d in ${documentCollection}
+      filter item._to == d._id
+      return d
+    `);
+    res.json(query);
+  })
+  .pathParam(
+    "product_number",
+    joi.string().required(),
+    "Drawing search by product_number"
+  )
+  .response(["application/json"], "Returns Drawing by product_number")
+  .summary("This endpoint retrieves Drawing(s) by product_number.")
+  .description("This endpoint retrieves Drawing(s) by product_number.");
+
+
+//GET method to search where used upto next level by product_number (hyperlink for whereused)
+router
+  .get("v2/whereused/:product_number", function (req, res) {
+    var user_input = req.pathParams.product_number;
+    const query = db._query(aql`
+      for item in ${partCollection}
+      filter item.product_number == ${user_input.replace(wildcardRegex, "%")}
+      for v,e,p in 1..1 outbound item ${part_bomCollection}
+      return p
+    `);
+    res.json(query);
+  })
+  .pathParam(
+    "product_number",
+    joi.string().required(),
+    "whereused by product_number"
+  )
+  .response(["application/json"], "Returns whereused by product_number")
+  .summary("This endpoint retrieves whereused by product_number.")
+  .description("This endpoint retrieves whereused by product_number.");
+
+
+//GET method to search where used upto n level by product_number (hyperlink for whereused)
+router
+  .get("v2/whereused/:product_number/:depth", function (req, res) {
+    var user_input = req.pathParams.product_number;
+    var n = int(req.pathParams.depth);
+    const query = db._query(aql`
+      for item in ${partCollection}
+      filter item.product_number == ${user_input.replace(wildcardRegex, "%")}
+      for v,e,p in 1..${n} outbound item ${part_bomCollection}
+      return p
+    `);
+    res.json(query);
+  })
+  .pathParam(
+    "product_number",
+    joi.string().required(),
+    "whereused by product_number"
+  )
+  .response(["application/json"], "Returns whereused by product_number")
+  .summary("This endpoint retrieves whereused by product_number.")
+  .description("This endpoint retrieves whereused by product_number.");
