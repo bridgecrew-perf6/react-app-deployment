@@ -14,6 +14,7 @@ import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import SearchRoutes from './Search'
 import ProductSearchRoutes from './ProductSearch'
+import GraphViewerRoutes from './GraphViewer'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -35,10 +36,10 @@ const getLayout = {
 }
 
 // ** Document title
-const TemplateTitle = '%s - Vuexy React Admin Template'
+const TemplateTitle = ''
 
 // ** Default Route
-const DefaultRoute = '/dashboard/ecommerce'
+const DefaultRoute = '/search/search'
 
 // ** Merge Routes
 const Routes = [
@@ -53,7 +54,8 @@ const Routes = [
   ...FormRoutes,
   ...TablesRoutes,
   ...ChartsRoutes,
-  ...ProductSearchRoutes
+  ...ProductSearchRoutes,
+  ...GraphViewerRoutes
   
 ]
 

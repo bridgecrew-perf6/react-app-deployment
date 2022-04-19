@@ -1,14 +1,14 @@
 // ** Icons Import
-import { Home, Circle, Database } from 'react-feather'
+import { Aperture } from 'react-feather'
 
 export default [
   {
-    id: 'productsearch',
-    title: 'Product Search',
-    icon: <Database size={20} />,
+    id: 'graphviewer',
+    title: 'Graph Viewer',
+    icon: <Aperture size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
-    navLink: '/productsearch/productsearch'
+    navLink: '/graphviewer/graphviewer'
     // children: [
     //   {
     //     // id: 'search',
