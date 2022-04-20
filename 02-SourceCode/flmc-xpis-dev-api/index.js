@@ -293,7 +293,7 @@ router
     const query = db._query(aql`
       for item in ${partCollection}
       filter item.product_number == ${user_input.replace(wildcardRegex, "%")}
-      for v,e,p in 1..1 outbound item ${part_bomCollection}
+      for v,e,p in 1..1 inbound item ${part_bomCollection}
       return p
     `);
     res.json(query);
@@ -308,16 +308,43 @@ router
   .description("This endpoint retrieves whereused by product_number.");
 
 
-//GET method to search where used upto n level by product_number (hyperlink for whereused)
+//GET method to search where used upto n level by product_number (hyperlink for whereused) (path)
 router
   .get("v2/whereused/:product_number/:depth", function (req, res) {
     var user_input = req.pathParams.product_number;
     var n = int(req.pathParams.depth);
     const query = db._query(aql`
       for item in ${partCollection}
+      let max = ${n}
       filter item.product_number == ${user_input.replace(wildcardRegex, "%")}
-      for v,e,p in 1..${n} outbound item ${part_bomCollection}
+      for v,e,p in 1..max inbound item ${part_bomCollection}
       return p
+    `);
+    res.json(query);
+  })
+  .pathParam(
+    "product_number",
+    joi.string().required(),
+    "whereused by product_number"
+  )
+  .pathParam(
+    "depth",
+    joi.string().required(),
+    "whereused by depth"
+  )
+  .response(["application/json"], "Returns whereused by product_number")
+  .summary("This endpoint retrieves whereused by product_number.")
+  .description("This endpoint retrieves whereused by product_number.");
+
+//GET method to search where used upto next top level by product_number (hyperlink for whereused) (vertex)
+router
+  .get("v2/whereusedvertex/:product_number", function (req, res) {
+    var user_input = req.pathParams.product_number;
+    const query = db._query(aql`
+      for item in ${partCollection}
+      filter item.product_number == ${user_input.replace(wildcardRegex, "%")}
+      for v,e,p in 1..1 inbound item ${part_bomCollection}
+      return v
     `);
     res.json(query);
   })
