@@ -5,6 +5,7 @@ import { Link } from 'react-router-dom'
 // ** Icons Imports
 import Select from 'react-select'
 // import ReactSelect from './SelectReact'
+import { selectThemeColors } from '@utils'
 
 // ** Utils
 // import { selectThemeColors } from '@utils'
@@ -28,7 +29,7 @@ import { Book } from 'react-feather'
 // import { List } from 'react-feather'
 
 // ** Reactstrap Imports
-import { Row, Col, Button, Breadcrumb, BreadcrumbItem  } from 'reactstrap'
+import { Row, Col, Button, Breadcrumb, BreadcrumbItem, Label, Input } from 'reactstrap'
 import Breadcrumbs from '@components/breadcrumbs'
 import '@styles/base/pages/ui-feather.scss'
 
@@ -55,6 +56,30 @@ import '@styles/base/pages/ui-feather.scss'
 // ** Styles
 // import '@styles/react/libs/charts/apex-charts.scss'
 
+
+const colourOptions = [
+  { value: 'force', label: 'force' },
+  { value: 'force', label: 'force' }
+  // { value: 'purple', label: 'Purple' },
+  // { value: 'red', label: 'Red' },
+  // { value: 'orange', label: 'Orange' }
+]
+
+const colourCCollection = [
+  { value: 'yes', label: 'Yes' },
+  { value: 'no', label: 'No' }
+  // { value: 'purple', label: 'Purple' },
+  // { value: 'red', label: 'Red' },
+  // { value: 'orange', label: 'Orange' }
+]
+
+const type = [
+  { value: 'arrow', label: 'Arrow' },
+  { value: 'line', label: 'Line' }
+  // { value: 'purple', label: 'Purple' },
+  // { value: 'red', label: 'Red' },
+  // { value: 'orange', label: 'Orange' }
+]
 
 const GraphViewer = () => {
   // ** Context
@@ -196,6 +221,88 @@ const GraphViewer = () => {
     <div id='graphviewer'>
       <div class="">
         <h4 class="card-title">Graph Viewer</h4>
+      </div>
+
+      <div className='row'>
+       <div className='col-sm-8'>
+sdf
+       </div>
+
+       <div className='col-sm-4'>
+         <div className='card'>
+           <div className='card-body'>
+           <div class=""><h6 class="">Graph</h6></div>
+           <hr></hr>
+           <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Layout</Label>
+            <Select
+              theme={selectThemeColors}
+              className='react-select'
+              classNamePrefix='select'
+              defaultValue={colourOptions[0]}
+              options={colourOptions}
+              isClearable={false}
+            />
+          </Col>
+          <div class=""><h6 class="">Nodes</h6></div>
+           <hr></hr>
+           <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Color by collections</Label>
+            <Select
+              theme={selectThemeColors}
+              className='react-select'
+              classNamePrefix='select'
+              defaultValue={colourCCollection[0]}
+              options={colourCCollection}
+              isClearable={false}
+            />
+          </Col>
+           <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Color</Label>
+            <Input type='color' id='basicInput' value="#ff0000" />
+          </Col>
+          <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Size by connections</Label>
+            <Select
+              theme={selectThemeColors}
+              className='react-select'
+              classNamePrefix='select'
+              defaultValue={colourCCollection[0]}
+              options={colourCCollection}
+              isClearable={false}
+            />
+          </Col>
+          <div class=""><h6 class="">Edges</h6></div>
+           <hr></hr>
+           <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Color by collections</Label>
+            <Select
+              theme={selectThemeColors}
+              className='react-select'
+              classNamePrefix='select'
+              defaultValue={colourCCollection[0]}
+              options={colourCCollection}
+              isClearable={false}
+            />
+          </Col>
+           <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Color</Label>
+            <Input type='color' id='basicInput' value="#ff0000" />
+          </Col>
+          <Col className='mb-1' md='12' sm='12'>
+            <Label className='form-label'>Type</Label>
+            <Select
+              theme={selectThemeColors}
+              className='react-select'
+              classNamePrefix='select'
+              defaultValue={type[0]}
+              options={type}
+              isClearable={false}
+            />
+          </Col>
+           </div>
+         </div>
+       </div>
       </div>
     </div>
   )
