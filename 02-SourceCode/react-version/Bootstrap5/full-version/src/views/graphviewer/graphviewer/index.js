@@ -225,7 +225,7 @@ const GraphViewer = () => {
 
       <div className='row'>
        <div className='col-sm-8'>
-sdf
+
        </div>
 
        <div className='col-sm-4'>
