@@ -4,7 +4,7 @@ import { Search} from 'react-feather'
 export default [
   {
     id: 'search',
-    title: 'Search',
+    title: 'Product Search',
     icon: <Search size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',

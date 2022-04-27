@@ -25,6 +25,7 @@ export let data
 // ** Get initial Data
 axios.get('/api/datatables/initial-data').then(response => {
   data = response.data
+  console.log(response.data)
 })
 
 // ** Table Zero Config Column
@@ -346,6 +347,10 @@ const invoiceStatusObj = {
   'Past Due': { color: 'light-danger', icon: Info },
   'Partial Payment': { color: 'light-warning', icon: PieChart }
 }
+const onSelectProperties = (val) => {
+  // console.log(row.full_name)
+  console.log(val)
+}
 
 // ** Table Adv Search Column
 export const advSearchColumns = [
@@ -371,7 +376,7 @@ export const advSearchColumns = [
         Icon = invoiceStatusObj[row.properties] ? invoiceStatusObj[row.properties].icon : Edit
       return (
         <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.id}`} />
+            <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.id}`} onClick={() => { onSelectProperties(row) }}/>
           {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row.id}`}>
             <span className='fw-bold'>Properties</span>
             <br />

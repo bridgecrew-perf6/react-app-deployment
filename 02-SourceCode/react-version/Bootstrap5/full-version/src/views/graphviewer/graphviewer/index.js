@@ -54,148 +54,75 @@ import '@styles/base/pages/ui-feather.scss'
 
 // ** Styles
 // import '@styles/react/libs/charts/apex-charts.scss'
+// import ReactFlow, { MiniMap, Controls } from 'react-flow-renderer'
 
+// const OneWayNodes = [
+//   {
+//     id: '1',
+//     type: 'input',
+//     data: { label: <h3 style={{color: 'blue'}}>Product A</h3> },
+//     position: { x: 500, y: 100 }
+    
+//   },
+//   {
+//     id: '2',
+//     // type: 'output',
+//     data: { label: <div style={{color: 'blue'}}>Place One</div> },
+//     position: { x: 100, y: 300 }
+//   },
+//   {
+//     id: '3',
+//     // type: 'output',
+//     data: { label: <div style={{color: 'blue'}}>Place Two</div> },
+//     position: { x: 300, y: 300 }
+//   },
+//   {
+//     id: '4',
+//     // type: 'input',
+//     data: { label: <div style={{color: 'blue'}}>Place Three</div> },
+//     position: { x: 500, y: 300 }
+//   },
+//   {
+//     id: '5',
+//     // you can also pass a React component as a label
+//     data: { label: <div style={{color: 'blue'}}>Place Four</div> },
+//     position: { x: 700, y: 300 }
+//   },
+//   {
+//     id: '6',
+//     type: 'output',
+//     data: { label: <div style={{color: 'blue'}}>Place Five</div> },
+//     position: { x: 900, y: 300 }
+//   }
+// ]
+// const OneWayEdges = [
+//   { id: 'e1-1', source: '1', target: '2' },
+//   { id: 'e1-2', source: '1', target: '3' },
+//   { id: 'e2-3', source: '1', target: '4' },
+//   { id: 'e1-4', source: '1', target: '5' },
+//   { id: 'e1-2', source: '1', target: '6' }
+// ]
 
 const GraphViewer = () => {
-  // ** Context
-  // const { colors } = useContext(ThemeColors)
-
-  // const colourOptions = [
-  //   { value: 'ocean', label: 'Ocean' },
-  //   { value: 'blue', label: 'Blue' },
-  //   { value: 'purple', label: 'Purple' },
-  //   { value: 'red', label: 'Red' },
-  //   { value: 'orange', label: 'Orange' }
-  // ]
-
-//   const fieldOptions = [
-//     { value: 'Catalog/ProductNo', label: 'Catalog/ProductNo' },
-//     { value: 'PartNo', label: 'PartNo' },
-//     { value: 'AGR', label: 'AGR' },
-//     { value: 'EAU', label: 'EAU' },
-//     { value: 'StockInventory', label: 'Stock Inventory' }
-//   ]
-
-
-//   const locationOptions = [
-//     { value: 'India', label: 'India' },
-//     { value: 'Germany', label: 'Germany' },
-//     { value: 'France', label: 'France' },
-//     { value: 'Netherlands ', label: 'Netherlands ' },
-//     { value: 'Poland ', label: 'Poland ' },
-//     { value: 'UK ', label: 'UK ' }
-
-//   ]
-
-//   const acdcOptions = [
-//     { value: 'AC', label: 'AC' },
-//     { value: 'DC', label: 'DC' }
-//   ]
-
-//   const voltageOptions = [
-//     { value: '100', label: '100' },
-//     { value: '200', label: '200' },
-//     { value: '300', label: '300' },
-//     { value: '400', label: '400' }
-//   ]
-
-
-//   const categoryOptions = [
-//     { value: '039169-001-50', label: '039169-001-50' },
-//     { value: '039169-001-60', label: '039169-001-60' },
-//     { value: '039169-001-70', label: '039169-001-70' },
-//     { value: '039169-001-80', label: '039169-001-80' },
-//     { value: '039169-001-FD', label: '039169-001-FD' }
-//   ]
-
-  // ** Vars
-  // const avatarGroupArr = [
-  //   {
-  //     imgWidth: 33,
-  //     imgHeight: 33,
-  //     title: 'Billy Hopkins',
-  //     placement: 'bottom',
-  //     img: require('@src/assets/images/portrait/small/avatar-s-9.jpg').default
-  //   },
-  //   {
-  //     imgWidth: 33,
-  //     imgHeight: 33,
-  //     title: 'Amy Carson',
-  //     placement: 'bottom',
-  //     img: require('@src/assets/images/portrait/small/avatar-s-6.jpg').default
-  //   },
-  //   {
-  //     imgWidth: 33,
-  //     imgHeight: 33,
-  //     title: 'Brandon Miles',
-  //     placement: 'bottom',
-  //     img: require('@src/assets/images/portrait/small/avatar-s-8.jpg').default
-  //   },
-  //   {
-  //     imgWidth: 33,
-  //     imgHeight: 33,
-  //     title: 'Daisy Weber',
-  //     placement: 'bottom',
-  //     img: require('@src/assets/images/portrait/small/avatar-s-7.jpg').default
-  //   },
-  //   {
-  //     imgWidth: 33,
-  //     imgHeight: 33,
-  //     title: 'Jenny Looper',
-  //     placement: 'bottom',
-  //     img: require('@src/assets/images/portrait/small/avatar-s-20.jpg').default
-  //   }
-  // ]
-  // const data = [
-  //   {
-  //     title: '12 Invoices have been paid',
-  //     content: 'Invoices have been paid to the company.',
-  //     meta: '',
-  //     metaClassName: 'me-1',
-  //     customContent: (
-  //       <div className='d-flex align-items-center'>
-  //         <img className='me-1' src={jsonImg} alt='data.json' height='23' />
-  //         <span>data.json</span>
-  //       </div>
-  //     )
-  //   },
-  //   {
-  //     title: 'Client Meeting',
-  //     content: 'Project meeting with john @10:15am.',
-  //     meta: '',
-  //     metaClassName: 'me-1',
-  //     color: 'warning',
-  //     customContent: (
-  //       <div className='d-flex align-items-center'>
-  //         <Avatar img={ceo} />
-  //         <div className='ms-50'>
-  //           <h6 className='mb-0'>John Doe (Client)</h6>
-  //           <span>CEO of Infibeam</span>
-  //         </div>
-  //       </div>
-  //     )
-  //   },
-  //   {
-  //     title: 'Create a new project for client',
-  //     content: 'Add files to new design folder',
-  //     color: 'info',
-  //     meta: '',
-  //     metaClassName: 'me-1',
-  //     customContent: <AvatarGroup data={avatarGroupArr} />
-  //   },
-  //   {
-  //     title: 'Create a new project for client',
-  //     content: 'Add files to new design folder',
-  //     color: 'danger',
-  //     meta: '',
-  //     metaClassName: 'me-1'
-  //   }
-  // ]
 
   return (
     <div id='graphviewer'>
-      <div class="">
-        <h4 class="card-title">Graph Viewer</h4>
+      <div className="">
+        <h4 className="card-title">Product Graph View</h4>
+      </div>
+      <Breadcrumb className='mb-1'>
+        <BreadcrumbItem>
+          <Link to='#'> Home </Link>
+        </BreadcrumbItem>
+        <BreadcrumbItem active>
+          <span> GraphViewer </span>
+        </BreadcrumbItem>
+      </Breadcrumb>
+      <div style={{height: '1000px', width: "2000px" }}>
+        {/* <ReactFlow
+          nodes={OneWayNodes}
+          edges={OneWayEdges}
+        /> */}
       </div>
     </div>
   )

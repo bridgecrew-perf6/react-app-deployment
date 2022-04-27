@@ -4,7 +4,7 @@ import { Home, Circle, Database } from 'react-feather'
 export default [
   {
     id: 'productsearch',
-    title: 'Product Search',
+    title: 'Product Search Results',
     icon: <Database size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
