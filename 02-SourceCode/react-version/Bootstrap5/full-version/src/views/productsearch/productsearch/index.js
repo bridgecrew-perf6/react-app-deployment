@@ -111,8 +111,11 @@ const GenerateUrl = (x) => {
   return url
 }
 const onSelectProperties = (val) => {
-  // console.log(row.full_name)
-  console.log(val)
+  console.log(val.product_number)
+}
+const onSelcetWhereUsed = (val) => {
+  console.log(val.product_number)
+  window.open(`/graphviewer/graphviewer?productNo=${btoa(val.product_number)}`)
 }
 const invoiceStatusObj = {
   Edit: { color: 'light-secondary', icon: Edit },
@@ -147,7 +150,7 @@ export const advSearchColumns = [
         Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
       return (
         <Fragment>
-            <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectProperties(row.product_number) }}/>
+            <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectProperties(row) }}/>
           {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
             <span className='fw-bold'>Properties</span>
             <br />
@@ -258,7 +261,7 @@ export const advSearchColumns = [
         Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
       return (
         <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
           {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
             <span className='fw-bold'>whereused</span>
             <br />
@@ -359,14 +362,19 @@ const ProductSearch = () => {
       const x = JSON.parse(atob(searchdata))
       setSearchData(x)
       const url = GenerateUrl(x)
-      axios.get(url).then(response => {
-        setData(response.data._documents)
-        SetIsLoadingData(false)
-        console.log(response.data._documents)
-      }).catch(err => {
-        SetIsLoadingData(false)
-        console.log(err)
-      })
+      if (url !== null) {
+        axios.get(url).then(response => {
+          setData(response.data._documents)
+          SetIsLoadingData(false)
+          console.log(response.data._documents)
+        }).catch(err => {
+          SetIsLoadingData(false)
+          console.log(err)
+        })
+      } else {
+        alert("Not valid search.")
+        window.location.href = '/search/search'
+      }
     }
     // return () => {
     //   second
@@ -390,6 +398,12 @@ const ProductSearch = () => {
   }
 
   // ** Custom Pagination
+  const paginationComponentOptions = {
+    rowsPerPageText: 'Records per page',
+    rangeSeparatorText: 'of',
+    selectAllRowsItem: true,
+    selectAllRowsItemText: 'All'
+  }
   const CustomPagination = () => (
     <ReactPaginate
       previouslabel={''}
@@ -422,7 +436,7 @@ const ProductSearch = () => {
       updatedData = data.filter(item => {
         // const startsWith = item.full_name.toLowerCase().startsWith(value.toLowerCase())
 
-        const includes = (item.full_name.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
+        const includes = (item.name.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
 
         if (includes) {
           return includes
@@ -603,14 +617,14 @@ const ProductSearch = () => {
         <h4 className="card-title">Product Search Results</h4>
       </div>
       <Breadcrumb className='mb-1'>
-        <BreadcrumbItem>
-          <Link to='#'> Home </Link>
-        </BreadcrumbItem>
         {/* <BreadcrumbItem>
-          <Link to='#'> Search </Link>
+          <Link to='#'> Home </Link>
         </BreadcrumbItem> */}
+        <BreadcrumbItem>
+          <Link to='/search/search'> Product Search </Link>
+        </BreadcrumbItem>
         <BreadcrumbItem active>
-          <span> Product Search </span>
+          <span> Product Search Results </span>
         </BreadcrumbItem>
       </Breadcrumb>
       { searchData !== '' && <p><b>search data</b>: Location Code: "{searchData.LocationCode}", Field Type: "{searchData.FieldType}", 
@@ -682,6 +696,7 @@ const ProductSearch = () => {
             className='react-dataTable'
             sortIcon={<ChevronDown size={10} />}
             paginationDefaultPage={currentPage + 1}
+            paginationComponentOptions={paginationComponentOptions}
             paginationComponent={CustomPagination}
             data={dataToRender()}
           />

@@ -319,7 +319,7 @@ const Search = () => {
           <Link to='#'> Search </Link>
         </BreadcrumbItem> */}
         <BreadcrumbItem active>
-          <span> Search </span>
+          <span> Product Search </span>
         </BreadcrumbItem>
       </Breadcrumb>
       <Row className='match-height'>
