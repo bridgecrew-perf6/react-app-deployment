@@ -84,7 +84,7 @@ const Search = () => {
 
   const fieldOptions = [
     { value: 'Catalog/ProductNo', label: 'Catalog/ProductNo' },
-    { value: 'PartNo', label: 'PartNo' },
+    { value: 'Description', label: 'Description' },
     { value: 'AGR', label: 'AGR' },
     { value: 'EAU', label: 'EAU' },
     { value: 'Drawing Number', label: 'Drawing Number' },
@@ -246,10 +246,10 @@ const Search = () => {
       isValid = false
       setFieldErrMsg("Please choose the field!")
     } else {
-      if (field === "Catalog/ProductNo" || field === "PartNo" || field === "Drawing Number") {
+      if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
         if (productNo === '') {
           isValid = false
-          setproductErrMsg("Please enter Catalog/Product/Part/Drawing number!")
+          setproductErrMsg("Please enter Catalog/Product/Description/Drawing number!")
         }
       } else {
         if ((min === -1 && max === -1) || (min === '' && max === '')) {
@@ -282,7 +282,7 @@ const Search = () => {
       return
     }
     let searchData = {}
-    if (field === "Catalog/ProductNo" || field === "PartNo" || field === "Drawing Number") {
+    if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
       searchData = {...searchData,
         LocationCode: location,
         FieldType: field,
@@ -356,11 +356,11 @@ const Search = () => {
                   <span className='text-danger'> {fieldErrMsg}</span>
                 </div>
 
-                { (field === "Catalog/ProductNo" || field === "PartNo" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
+                { (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
                   <label className='form-label w-100'>
-                    <span className='astrix'>*</span> Catalog, Product or Part Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
+                    <span className='astrix'>*</span> Catalog, Product, Description or  Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
                   </label>
-                  <input type='text' id='fieldInput' className='form-control' placeholder='Enter Catalog, Product or Part Number' onChange={onChangeCatelogProduct} />
+                  <input type='text' id='fieldInput' className='form-control' placeholder='Enter Catalog, Product, Description or Part Number' onChange={onChangeCatelogProduct} />
                   <span className='text-danger'>{productErrMsg}</span>
                   {/* <Select
                     theme={selectThemeColors}

@@ -83,7 +83,7 @@ const GenerateUrl = (x) => {
     const loc = x.LocationCode
     const prodno = x.ProductNo
     url = `${apiUrl}/part/${loc}/${prodno}`
-  } else if (x.FieldType === "PartNo") {
+  } else if (x.FieldType === "Description") {
     const loc = x.LocationCode
     const partno = x.ProductNo
     url = `${apiUrl}/part/${loc}/${partno}`
@@ -163,7 +163,7 @@ export const advSearchColumns = [
     }
     },
   {
-    name: 'Drawing (EU)',
+    name: 'Drawing',
     sortable: false,
     minWidth: '50px',
     sortField: 'drawingeu',
@@ -184,28 +184,28 @@ export const advSearchColumns = [
       )
     }
   },
-  {
-    name: 'Drawing (US)',
-    sortable: true,
-    sortField: 'drawingUS',
-    minWidth: '50px',
-    cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
-      return (
-        <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>Drawing US</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
-        </Fragment>
-      )
-    }
-  },
+  // {
+  //   name: 'Drawing (US)',
+  //   sortable: true,
+  //   sortField: 'drawingUS',
+  //   minWidth: '50px',
+  //   cell: row => {
+  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
+  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
+  //     return (
+  //       <Fragment>
+  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+  //         {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
+  //           <span className='fw-bold'>Drawing US</span>
+  //           <br />
+  //           <span className='fw-bold'>Balance:</span>
+  //           <br />
+  //           <span className='fw-bold'>Due Date:</span>
+  //         </UncontrolledTooltip> */}
+  //       </Fragment>
+  //     )
+  //   }
+  // },
   {
     name: 'Product Structure',
     sortable: true,
@@ -274,10 +274,10 @@ export const advSearchColumns = [
     }
   },
   {
-    name: 'Impolde',
+    name: 'Implode',
     sortable: true,
     minWidth: '100px',
-    sortField:'Impolde',
+    sortField:'Implode',
     cell: row => {
       const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
         Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
