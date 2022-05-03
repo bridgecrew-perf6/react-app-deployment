@@ -4,6 +4,7 @@ import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Avatar from '@components/avatar'
 import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
+import CsvDownload from 'react-csv-downloader'
 // import { data } from '../../tables/data-tables/data'
 // ** Reactstrap Imports
 // import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip } from 'reactstrap'
@@ -338,6 +339,72 @@ export const advSearchColumns = [
     selector: row => row.organization
   }
 ]
+export const CsvDataColumns = [
+  {
+    id: 'product_number',
+    displayName: 'Catalog/Product #'
+  },
+  {
+    id: 'description',
+    displayName: 'Description'
+  },
+  {
+    id: 'agr',
+    name: 'AGR'
+  },
+  {
+    id: 'eau',
+    name: 'EAU'
+  },
+  {
+    id: 'inventory',
+    displayName: 'OnHand Invnetory'
+  },
+  {
+    id: 'isCatalog',
+    displayName: 'Is Catalog'
+  },
+  {
+    id: 'item_type_mbp',
+    displayName: 'Item Type MBP'
+  },
+  {
+    id: 'name',
+    displayName: 'Full Name'
+  },
+  {
+    id: 'organization',
+    displayName: 'Intellectual Owner'
+  },
+  {
+    id: 'part_revision',
+    displayName: 'Part Revision'
+  },
+  {
+    id: 'status',
+    displayName: 'Status'
+  },
+  {
+    id: 'std_cost_current',
+    displayName: 'Standard Cost'
+  },
+  {
+    id: 'weight',
+    displayName: 'Weight'
+  },
+  {
+    id: '_id',
+    displayName: 'Product Id'
+  },
+  {
+    id: '_key',
+    displayName: 'Product Key'
+  },
+  {
+    id: '_rev',
+    displayName: 'Product Rev'
+  }
+]
 
 const ProductSearch = () => {
   // const [Picker, setPicker] = useState('')
@@ -347,13 +414,40 @@ const ProductSearch = () => {
   // const [searchPost, setSearchPost] = useState('')
   // const [searchCity, setSearchCity] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
-  // const [searchEmail, setSearchEmail] = useState('')
-  // const [searchSalary, setSearchSalary] = useState('')
   const [filteredData, setFilteredData] = useState([])
+  // const [csvColumns, setcsvcolumns] = useState([])
+  const [csvData, setcsvData] = useState([])
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
   const [searchData, setSearchData] = useState('')
+
+  // ** SET CSV Data
+  const onSetCSVData = (CsvData) => {
+    const csvdata = []
+    CsvData.map(item => {
+      csvdata.push({
+        agr: item.agr,
+        description: item.description,
+        eau: item.eau,
+        inventory: item.inventory,
+        isCatalog: item.isCatalog,
+        item_type_mbp: item.item_type_mbp,
+        name: item.name,
+        organization: item.organization,
+        part_revision: item.part_revision,
+        product_number: item.product_number,
+        status: item.status,
+        std_cost_current: item.std_cost_current,
+        weight: item.weight,
+        _id: item._id,
+        _key: item._key,
+        _rev: item._rev
+      })
+    })
+    setcsvData(csvdata)
+  }
+
   useEffect(() => {
     const searchdata = localStorage.getItem('searchData')
     if (searchdata === undefined || searchdata === null) {
@@ -365,6 +459,7 @@ const ProductSearch = () => {
       if (url !== null) {
         axios.get(url).then(response => {
           setData(response.data._documents)
+          onSetCSVData(response.data._documents)
           SetIsLoadingData(false)
           console.log(response.data._documents)
         }).catch(err => {
@@ -641,21 +736,20 @@ const ProductSearch = () => {
           <Row className='mt-1 mb-50'>
             <Col lg='4' md='6' className='mb-1'>
               <label className='form-label' htmlFor='catalog/product' />
-                search:
+                Search:
               <Input id='name' placeholder='' value={searchName} onChange={handleNameFilter} />
             </Col>
-            {/* <Col lg='4' md='6' className='mb-1'>
-              <label className='form-label' htmlFor='email'>
-                Email:
-              </label>
-              <Input
-                type='email'
-                id='email'
-                placeholder='Bwayne@email.com'
-                value={searchEmail}
-                onChange={handleEmailFilter}
-              />
-            </Col> */}
+            <Col lg='8' md='6' className='mb-1 m-auto'>
+            {!isLoadingData && <div className='float-right'>
+              <CsvDownload
+                filename="myfile"
+                extension=".csv"
+                separator=","
+                columns={CsvDataColumns}
+                datas={csvData}
+              >Export</CsvDownload>
+            </div>}
+            </Col>
             {/* <Col lg='4' md='6' className='mb-1'>
               <label className='form-label' htmlFor='drawingnumber ' />
                 Drawing Number:
