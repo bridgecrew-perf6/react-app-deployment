@@ -15,6 +15,7 @@ import AuthenticationRoutes from './Authentication'
 import SearchRoutes from './Search'
 import ProductSearchRoutes from './ProductSearch'
 import GraphViewerRoutes from './GraphViewer'
+import ProductTreeRoutes from './Emr-ProductTree'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -55,7 +56,8 @@ const Routes = [
   ...TablesRoutes,
   ...ChartsRoutes,
   ...ProductSearchRoutes,
-  ...GraphViewerRoutes
+  ...GraphViewerRoutes,
+  ...ProductTreeRoutes
   
 ]
 

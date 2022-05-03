@@ -118,6 +118,10 @@ const onSelcetWhereUsed = (val) => {
   console.log(val.product_number)
   window.open(`/graphviewer/graphviewer?productNo=${btoa(val.product_number)}`)
 }
+const onSelcetProductStructure = (val) => {
+  console.log(val.product_number)
+  window.open(`/productstructure/productstructure?productNo=${btoa(val.product_number)}`)
+}
 const invoiceStatusObj = {
   Edit: { color: 'light-secondary', icon: Edit },
   Paid: { color: 'light-success', icon: CheckCircle },
@@ -217,7 +221,7 @@ export const advSearchColumns = [
         Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
       return (
         <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
           {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
             <span className='fw-bold'>productStrucuture</span>
             <br />
