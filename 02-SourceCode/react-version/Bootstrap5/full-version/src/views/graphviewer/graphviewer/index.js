@@ -111,8 +111,8 @@ const GraphViewer = () => {
         <h4 className="card-title">Product Graph View</h4>
       </div>
       <Breadcrumb className='mb-1'>
-        <BreadcrumbItem>
-          <Link to='#'> Home </Link>
+      <BreadcrumbItem>
+          <Link to='/search/search'> Product Search </Link>
         </BreadcrumbItem>
         <BreadcrumbItem active>
           <span> GraphViewer </span>

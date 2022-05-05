@@ -96,17 +96,17 @@ const GenerateUrl = (x) => {
     const loc = x.LocationCode
     const agrmin = x.Min
     const agrmax = x.Max
-    url = `${apiUrl}/part/${loc}/${agrmin}/${agrmax}`
+    url = `${apiUrl}/part/${loc}/agr/${agrmin}/${agrmax}`
   } else if (x.FieldType === "EAU") {
     const loc = x.LocationCode
     const eaumin = x.Min
     const eaumax = x.Max
-    url = `${apiUrl}/part/${loc}/${eaumin}/${eaumax}`
+    url = `${apiUrl}/part/${loc}/eau/${eaumin}/${eaumax}`
   } else if (x.FieldType === "StockInventory") {
     const loc = x.LocationCode
     const envmin = x.Min
     const envmax = x.Max
-    url = `${apiUrl}/part/${loc}/${envmin}/${envmax}`
+    url = `${apiUrl}/part/${loc}/inventory/${envmin}/${envmax}`
   }
   console.log(url)
   return url
