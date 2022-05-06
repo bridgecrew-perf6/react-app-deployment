@@ -77,26 +77,26 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 // import TableWithButtons from './TableWithButtons'
 // import TableMultilingual from './TableMultilingual'
 // import DataTablesReOrder from './TableColumnReorder'
-const apiUrl = "http://127.0.0.1:8529/_db/flmc-xpis-dev/api/dev/v2"
+const apiUrl = "http://127.0.0.1:8529/_db/flmc-xpis-dev/api/dev/"
 const GenerateUrl = (x) => {
   let url = null
   if (x.FieldType === "Catalog/ProductNo") {
     const loc = x.LocationCode
     const prodno = x.ProductNo
-    url = `${apiUrl}/part/${loc}/${prodno}`
+    url = `${apiUrl}/part?product_number=${prodno}&location=${loc}`
   } else if (x.FieldType === "Description") {
     const loc = x.LocationCode
-    const partno = x.ProductNo
-    url = `${apiUrl}/part/${loc}/${partno}`
+    const desc = x.ProductNo
+    url = `${apiUrl}/part?description=${desc}&location=${loc}`
   } else if (x.FieldType === "Drawing Number") {
     const loc = x.LocationCode
     const drawNo = x.ProductNo
-    url = `${apiUrl}/part/${loc}/${drawNo}`
+    url = `${apiUrl}/part?drawing_number=${drawNo}&location=${loc}`
   } else if (x.FieldType === "AGR") {
     const loc = x.LocationCode
     const agrmin = x.Min
     const agrmax = x.Max
-    url = `${apiUrl}/part/${loc}/agr/${agrmin}/${agrmax}`
+    url = `${apiUrl}/part?location=${loc}&agr_min=${agrmin}&agr_max=${agrmax}`
   } else if (x.FieldType === "EAU") {
     const loc = x.LocationCode
     const eaumin = x.Min
@@ -462,10 +462,10 @@ const ProductSearch = () => {
       const url = GenerateUrl(x)
       if (url !== null) {
         axios.get(url).then(response => {
-          setData(response.data._documents)
-          onSetCSVData(response.data._documents)
+          setData(response.data.result._documents)
+          onSetCSVData(response.data.result._documents)
           SetIsLoadingData(false)
-          console.log(response.data._documents)
+          console.log(response.data.result._documents)
         }).catch(err => {
           SetIsLoadingData(false)
           console.log(err)

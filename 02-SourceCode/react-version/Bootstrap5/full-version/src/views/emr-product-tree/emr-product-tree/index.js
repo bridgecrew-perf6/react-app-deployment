@@ -236,14 +236,14 @@ const ProductTree = () => {
   return (
     <div id='producttree'>
       <div className=""> 
-        <h4 className="card-title">Product Tree Structure</h4>
+        <h4 className="card-title">Product Structure</h4>
       </div>
       <Breadcrumb className='mb-1'>
         <BreadcrumbItem>
           <Link to='/search/search'> Product Search </Link>
         </BreadcrumbItem>
         <BreadcrumbItem active>
-          <span> Product Tree Structure</span>
+          <span> Product Structure</span>
         </BreadcrumbItem>
       </Breadcrumb>
       {/* <div style={{height: '400px', width: "2000px" }}>
