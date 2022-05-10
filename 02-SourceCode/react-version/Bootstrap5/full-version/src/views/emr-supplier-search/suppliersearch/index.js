@@ -59,19 +59,19 @@ const SupplierSearch = () => {
               <div className="card-body row">
                 <div className="col-md-5 mb-1 mt-1">
                   <label className='form-label w-100'>
-                    {/* <span className='astrix'>*</span> */} Supplier Name {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
+                    <span className='astrix'>*</span> Supplier Name {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
                   </label>
                   <input type='text' id='suplierInput' className='form-control' placeholder='Enter supplier name' onChange={onChangeSupplier} />
-                </div><div className="col-md-2 mb-1 mt-2 text-center">
-                  <br/>
-                  <span className='astrix'>*</span>(OR)
+                </div><div className="col-md-2 mb-1 mt-3 text-center">
+                  (OR)
                 </div>
                 <div className="col-md-5 mb-1 mt-1">
                   <label className='form-label w-100'>
-                    {/* <span className='astrix'>*</span> */} Product/Part Number {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
+                    <span className='astrix'>*</span> Product/Part Number {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
                   </label>
                   <input type='text' id='prodInput' className='form-control' placeholder='Enter Product or Part Number' onChange={onChangeProductNo} />
                 </div>
+                <span className='form-label w-100'>Note: You can search by both Supplier Name and Product number.</span>
                 <span className='text-danger'>{suppErrMsg}</span>
               </div>
             </div>

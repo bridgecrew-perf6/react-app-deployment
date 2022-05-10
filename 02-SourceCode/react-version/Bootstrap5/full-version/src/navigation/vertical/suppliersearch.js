@@ -1,11 +1,11 @@
 // ** Icons Import
-import { Search, Circle} from 'react-feather'
+import { ShoppingBag, Circle} from 'react-feather'
 
 export default [
   {
     id: 'supliersearch',
     title: 'Supplier Search',
-    icon: <Search size={20} />,
+    icon: <ShoppingBag size={20} />,
     // badge: 'light-warning',
     // badgeText: '2',
     navLink: '/suppliersearch/suppliersearch'

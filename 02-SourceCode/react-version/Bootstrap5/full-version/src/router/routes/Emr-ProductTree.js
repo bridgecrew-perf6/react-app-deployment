@@ -4,7 +4,7 @@ const ProductTree = lazy(() => import('../../views/emr-product-tree/emr-product-
 
 const ProductTreeRoutes = [
   {
-    path: '/productstructure/productstructure',
+    path: '/productsearch/productstructure',
     element: <ProductTree />
   }
 ]

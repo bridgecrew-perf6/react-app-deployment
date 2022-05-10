@@ -298,7 +298,7 @@ const Search = () => {
     }
     // console.log(searchData)
     localStorage.setItem('searchData', btoa(JSON.stringify(searchData)))
-    window.location.href = '/productsearch/productsearch'
+    window.location.href = '/productsearch/productsearchresults'
     // const xx = btoa(JSON.stringify(searchData))
     // console.log(xx)
     // const yy = atob(xx)

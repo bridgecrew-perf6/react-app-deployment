@@ -117,11 +117,11 @@ const onSelectProperties = (val) => {
 }
 const onSelcetWhereUsed = (val) => {
   console.log(val.product_number)
-  window.open(`/graphviewer/graphviewer?productNo=${btoa(val.product_number)}`)
+  window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
 }
 const onSelcetProductStructure = (val) => {
   console.log(val.product_number)
-  window.open(`/productstructure/productstructure?productNo=${btoa(val.product_number)}`)
+  window.open(`/productsearch/productstructure?productNo=${btoa(val.product_number)}`)
 }
 const invoiceStatusObj = {
   Edit: { color: 'light-secondary', icon: Edit },

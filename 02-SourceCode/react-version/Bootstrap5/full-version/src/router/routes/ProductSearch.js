@@ -5,7 +5,7 @@ const ProductSearch = lazy(() => import('../../views/productsearch/productsearch
 
 const ProductSearchRoutes = [
   {
-    path: '/productsearch/productsearch',
+    path: '/productsearch/productsearchresults',
     element: <ProductSearch />
   }
 //   {

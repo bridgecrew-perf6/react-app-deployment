@@ -14,7 +14,7 @@ import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import SearchRoutes from './Search'
 import ProductSearchRoutes from './ProductSearch'
-import GraphViewerRoutes from './GraphViewer'
+import WhereUsedRoutes from './Emr-WhereUsed'
 import ProductTreeRoutes from './Emr-ProductTree'
 import SupplierSearchRoutes from './Emr-SupplierSearch'
 
@@ -57,9 +57,9 @@ const Routes = [
   ...TablesRoutes,
   ...ChartsRoutes,
   ...ProductSearchRoutes,
-  ...GraphViewerRoutes,
   ...ProductTreeRoutes,
-  ...SupplierSearchRoutes
+  ...SupplierSearchRoutes,
+  ...WhereUsedRoutes
   
 ]
 

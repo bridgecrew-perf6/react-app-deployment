@@ -15,14 +15,14 @@ const GenerateUrl = (x) => {
   let url = null
   if (x.suppliername === "") {
     const prodno = x.ProductNo
-    url = `${apiUrl}/suppliersearch?product_number=${prodno}`
+    url = `${apiUrl}/supplier?product_number=${prodno}`
   } else if (x.ProductNo === "") {
     const supName = x.suppliername
-    url = `${apiUrl}/suppliersearch?supplier_name=${supName}`
+    url = `${apiUrl}/supplier?supplier_name=${supName}`
   } else {
     const supName = x.suppliername
     const prodno = x.ProductNo
-    url = `${apiUrl}/suppliersearch?supplier_name=${supName}&product_number=${prodno}`
+    url = `${apiUrl}/supplier?supplier_name=${supName}&product_number=${prodno}`
   }
   console.log(url)
   return url
