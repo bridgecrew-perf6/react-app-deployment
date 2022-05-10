@@ -77,7 +77,8 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 // import TableWithButtons from './TableWithButtons'
 // import TableMultilingual from './TableMultilingual'
 // import DataTablesReOrder from './TableColumnReorder'
-const apiUrl = "http://127.0.0.1:8529/_db/flmc-xpis-dev/api/dev/"
+// const apiUrl = "http://127.0.0.1:8529/_db/flmc-xpis-dev/api/dev/"
+import { apiUrl } from '../../../serviceWorker'
 const GenerateUrl = (x) => {
   let url = null
   if (x.FieldType === "Catalog/ProductNo") {
@@ -101,12 +102,12 @@ const GenerateUrl = (x) => {
     const loc = x.LocationCode
     const eaumin = x.Min
     const eaumax = x.Max
-    url = `${apiUrl}/part/${loc}/eau/${eaumin}/${eaumax}`
+    url = `${apiUrl}/part?location=${loc}&eau_min=${eaumin}&eau_max=${eaumax}`
   } else if (x.FieldType === "StockInventory") {
     const loc = x.LocationCode
     const envmin = x.Min
     const envmax = x.Max
-    url = `${apiUrl}/part/${loc}/inventory/${envmin}/${envmax}`
+    url = `${apiUrl}/part?location=${loc}&inv_min=${envmin}&inv_max=${envmax}`
   }
   console.log(url)
   return url
@@ -533,9 +534,8 @@ const ProductSearch = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = data.filter(item => {
-        // const startsWith = item.full_name.toLowerCase().startsWith(value.toLowerCase())
-
-        const includes = (item.name.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
+        const productName = typeof item.name === "string" ? item.name : item.name.toString()
+        const includes = (productName.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
 
         if (includes) {
           return includes
@@ -728,7 +728,7 @@ const ProductSearch = () => {
       </Breadcrumb>
       { searchData !== '' && <p><b>search data</b>: Location Code: "{searchData.LocationCode}", Field Type: "{searchData.FieldType}", 
       {searchData?.ProductNo !== undefined && <> Catalog/Product/Drawing/Part No : "{searchData.ProductNo}"</>}
-      {searchData?.ProductNo === undefined && <> Min: "{searchData.Max}"", Min: "{searchData.Max}"</>}
+      {searchData?.ProductNo === undefined && <> Min: "{searchData.Min}"", Max: "{searchData.Max}"</>}
       </p>}
       <Row className='match-height'>
         <Col sm='12'>
