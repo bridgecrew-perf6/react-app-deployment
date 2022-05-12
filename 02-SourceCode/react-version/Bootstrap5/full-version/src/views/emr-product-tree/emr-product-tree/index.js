@@ -1,8 +1,29 @@
-import React from 'react'
+import React, {useState, useEffect } from 'react'
 import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
 import { Link } from 'react-router-dom'
 import Tree from 'react-animated-tree'
+import CsvDownload from 'react-csv-downloader'
+import resultsData from './apiresults.json'
 
+const generateNewResults = (resultsData) => {
+  const  results = []
+  for (const i in resultsData) {
+    results.push(resultsData[i])
+  }
+  return results
+}
+const TestTreeNode = (alldata, childName) => {
+  const findChilds = alldata.find(item => item.name === childName)
+  if (findChilds === null || findChilds === undefined) {
+    return <Tree key={childName} content={childName}/>
+  } else {
+    return <Tree key={childName} content={childName} visible>
+      {findChilds.children.map(item => {
+        return TestTreeNode(alldata, item)
+      })}
+    </Tree>
+  }
+}
 const data = { 
   id: 1,
   name: "8210G002-016",
@@ -232,7 +253,39 @@ const TreeNode = (obj) => {
     </Tree>
   }
 }
+export const CsvDataColumns = [
+  {
+    id: 'level',
+    displayName: 'Node Level'
+  },
+  {
+    id: 'name',
+    displayName: 'Catalog/Product #'
+  }
+]
+const csvExportData = []
+const setCSVData = (obj, i) => {
+  // let csvExportData = []
+  if (obj.children.length === 0) {
+    csvExportData.push({level: i, name: obj.name})
+  } else {
+    csvExportData.push({level: i, name: obj.name})
+    obj.children.map((item, j) => {
+      const newIndex = `${i}.${j + 1}`
+      setCSVData(item, newIndex)
+    })
+  }
+}
+// const generateAPIur
 const ProductTree = () => {
+  const [csvData, setcsvData] = useState([])
+  const [testcsvData, testsetcsvData] = useState([])
+  
+  useEffect(() => {
+    setCSVData(data, "1")
+    setcsvData(csvExportData)
+    testsetcsvData(generateNewResults(resultsData))
+  }, [])
   return (
     <div id='producttree'>
       <div className=""> 
@@ -246,42 +299,33 @@ const ProductTree = () => {
           <span> Product Structure</span>
         </BreadcrumbItem>
       </Breadcrumb>
-      {/* <div style={{height: '400px', width: "2000px" }}>
-        <Tree content="Product" open  visible onClick={console.log("Clicked On Tree")}>
-          <Tree content="Contents" visible>
-            <Tree content="Seeds" />
-            <Tree content="Contents">
-              <Tree content="Seeds" />
-            </Tree>
-            <Tree content="Contents">
-              <Tree content="Seeds" />
-              <Tree content="Contents">
-                <Tree content="Seeds" />
-              </Tree>
-              <Tree content="Contents">
-                <Tree content="Seeds" />
-              </Tree>
-            </Tree>
-            <Tree content="Seeds" />
-          </Tree>
-          <Tree content="Contents" visible>
-            <Tree content="Seeds"/>
-            <Tree content="Contents">
-              <Tree content="Seeds" />
-            </Tree>
-            <Tree content="Contents">
-              <Tree content="Seeds" />
-            </Tree>
-          </Tree>
-        </Tree>
-      </div> */}
+      <div>
+        <CsvDownload
+          filename="myfile"
+          extension=".csv"
+          separator=","
+          columns={CsvDataColumns}
+          datas={csvData}
+        >Export</CsvDownload>
+      </div>
       <div style={{height: '100%', width: "2000px", overflowY: "auto" }}>
         { data.children.length === 0 && <Tree content={data.name}/>}
         { data.children.length >= 0 && <Tree key={data.id} content={data.name}  visible>
             {data.children.map(item => {
               return TreeNode(item)
             })}
-          </Tree> }
+          </Tree>
+        }
+        {/* Test Tree nodes */}
+        {
+          testcsvData.length > 0 && <Tree key={testcsvData[0].name} content={testcsvData[0].name} visible>
+           {testcsvData[0].children.map(item => {
+              return TestTreeNode(testcsvData, item)
+            })
+           }
+          </Tree>
+        }
+
       </div>
     </div>
   )

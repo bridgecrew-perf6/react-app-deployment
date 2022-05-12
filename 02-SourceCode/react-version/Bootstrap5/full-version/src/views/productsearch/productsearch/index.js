@@ -1,14 +1,8 @@
 // ** React Imports
-import { Fragment, useState, useEffect} from 'react'
-import { Link } from 'react-router-dom'
-import axios from 'axios'
-import Avatar from '@components/avatar'
-import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
-import CsvDownload from 'react-csv-downloader'
 // import { data } from '../../tables/data-tables/data'
 // ** Reactstrap Imports
 // import { Badge, UncontrolledDropdown, DropdownToggle, DropdownMenu, DropdownItem, UncontrolledTooltip } from 'reactstrap'
-
+// import Breadcrumbs from '@components/breadcrumbs'
 // ** Icons Imports
 // import Select from 'react-select'
 // import ReactSelect from './SelectReact'
@@ -34,20 +28,10 @@ import CsvDownload from 'react-csv-downloader'
 // import * as Icons from 'react-feather'
 // import { CopyToClipboard } from 'react-copy-to-clipboard'
 // import { List } from 'react-feather'
-
-import Flatpickr from 'react-flatpickr'
-import ReactPaginate from 'react-paginate'
+// import Flatpickr from 'react-flatpickr'
 // import { ChevronDown } from 'react-feather'
-import DataTable from 'react-data-table-component'
 // import TableAdvSearch from './TableAdvSearch'
-
-
 // ** Reactstrap Imports
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
-// import Breadcrumbs from '@components/breadcrumbs'
-import '@styles/base/pages/ui-feather.scss'
-import '@styles/react/apps/app-invoice.scss'
-
 // ** Demo Components
 // import InvoiceList from '@src/views/apps/invoice/list'
 // import Sales from '@src/views/ui-elements/cards/analytics/Sales'
@@ -69,7 +53,7 @@ import '@styles/react/apps/app-invoice.scss'
 // import ceo from '@src/assets/images/portrait/small/avatar-s-9.jpg'
 
 // ** Styles
-import '@styles/react/libs/tables/react-dataTable-component.scss'
+
 // import '@styles/react/libs/charts/apex-charts.scss'
 // import '../../../assets/scss/stye.css'
 // import TableExpandable from './TableExpandable'
@@ -77,8 +61,20 @@ import '@styles/react/libs/tables/react-dataTable-component.scss'
 // import TableWithButtons from './TableWithButtons'
 // import TableMultilingual from './TableMultilingual'
 // import DataTablesReOrder from './TableColumnReorder'
-// const apiUrl = "http://127.0.0.1:8529/_db/flmc-xpis-dev/api/dev/"
+import { Fragment, useState, useEffect} from 'react'
+import { Link } from 'react-router-dom'
+import axios from 'axios'
+import Avatar from '@components/avatar'
+import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
+import CsvDownload from 'react-csv-downloader'
+import ReactPaginate from 'react-paginate'
+import DataTable from 'react-data-table-component'
+import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem, ModalHeader, ModalBody, ModalFooter, Modal, UncontrolledTooltip } from 'reactstrap'
+import '@styles/base/pages/ui-feather.scss'
+import '@styles/react/apps/app-invoice.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { apiUrl } from '../../../serviceWorker'
+
 const GenerateUrl = (x) => {
   let url = null
   if (x.FieldType === "Catalog/ProductNo") {
@@ -112,9 +108,10 @@ const GenerateUrl = (x) => {
   console.log(url)
   return url
 }
-const onSelectProperties = (val) => {
-  console.log(val.product_number)
-}
+// const onSelectProperties = (val) => {
+//   console.log(val.product_number)
+//   window.open(`/productsearch/productstructure?productNo=${btoa(val.product_number)}`, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400")
+// }
 const onSelcetWhereUsed = (val) => {
   console.log(val.product_number)
   window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
@@ -131,6 +128,44 @@ const invoiceStatusObj = {
   UpArrow: { color: 'light-info', icon: ArrowUpCircle },
   'Past Due': { color: 'light-danger', icon: Info },
   'Partial Payment': { color: 'light-warning', icon: PieChart }
+}
+
+const PropertiesWindow = ({row}) => {
+  const [isOpenModel, setScrollInnerModal] = useState(false)
+  const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
+  Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
+
+  return (
+    <Fragment>
+      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.product_number}`} onClick={() => { setScrollInnerModal(true) }}/>
+      {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row.product_number}`}>
+        <span className='fw-bold fs-30'>PROPERTIES</span><br />
+        <span className='fw-bold text-left'>Catalog/Product #: {row.product_number}</span><br />
+        <span className='fw-bold'>Description: {row.description}</span><br />
+        <span className='fw-bold'>AGR: {row.agr}</span><br />
+        <span className='fw-bold'>EAU: {row.eau}</span><br />
+        <span className='fw-bold'>On Hand Inventory: {row.inventory}</span><br />
+        <span className='fw-bold'>Plant: {row.organization}</span><br />
+        <span className='fw-bold'>Status: {row.status}</span><br />
+        <span className='fw-bold'>Standard Cost: {row.std_cost_current}</span><br />
+        <span className='fw-bold'>Weight: {row.weight}</span>
+      </UncontrolledTooltip> */}
+      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }}>
+        <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
+        <ModalBody>
+          <p><span className='fw-bold'>Catalog/Product #:</span> {row.product_number}</p>
+          <p><span className='fw-bold'>Description:</span> {row.description}</p>
+          <p><span className='fw-bold'>AGR:</span> {row.agr}</p>
+          <p><span className='fw-bold'>EAU:</span> {row.eau}</p>
+          <p><span className='fw-bold'>On Hand Inventory:</span> {row.inventory}</p>
+          <p><span className='fw-bold'>Plant:</span> {row.organization}</p>
+          <p><span className='fw-bold'>Status:</span> {row.status}</p>
+          <p><span className='fw-bold'>Standard Cost:</span> {row.std_cost_current}</p>
+          <p><span className='fw-bold'>Weight:</span> {row.weight}</p>
+        </ModalBody>
+      </Modal>
+    </Fragment>
+  )
 }
 // ** Table Adv Search Column
 export const advSearchColumns = [
@@ -152,18 +187,12 @@ export const advSearchColumns = [
     minWidth: '50px',
     sortField: 'properties',
     cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
+      // const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
+      // Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
       return (
         <Fragment>
-            <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectProperties(row) }}/>
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>Properties</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
+            {/* <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.product_number}`} onClick={() => { onSelectProperties(row) }}/> */}
+            <PropertiesWindow row={row}/>
         </Fragment>
       )
     }
@@ -179,39 +208,10 @@ export const advSearchColumns = [
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>Drawing EU</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
         </Fragment>
       )
     }
   },
-  // {
-  //   name: 'Drawing (US)',
-  //   sortable: true,
-  //   sortField: 'drawingUS',
-  //   minWidth: '50px',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-  //         {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-  //           <span className='fw-bold'>Drawing US</span>
-  //           <br />
-  //           <span className='fw-bold'>Balance:</span>
-  //           <br />
-  //           <span className='fw-bold'>Due Date:</span>
-  //         </UncontrolledTooltip> */}
-  //       </Fragment>
-  //     )
-  //   }
-  // },
   {
     name: 'Product Structure',
     sortable: true,
@@ -223,13 +223,6 @@ export const advSearchColumns = [
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>productStrucuture</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
         </Fragment>
       )
     }
@@ -245,13 +238,6 @@ export const advSearchColumns = [
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>ICS Product Structure</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
         </Fragment>
       )
     }
@@ -268,13 +254,6 @@ export const advSearchColumns = [
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>whereused</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
         </Fragment>
       )
     }
@@ -290,13 +269,6 @@ export const advSearchColumns = [
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-          {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row._id}`}>
-            <span className='fw-bold'>whereused</span>
-            <br />
-            <span className='fw-bold'>Balance:</span>
-            <br />
-            <span className='fw-bold'>Due Date:</span>
-          </UncontrolledTooltip> */}
         </Fragment>
       )
     }
@@ -344,6 +316,7 @@ export const advSearchColumns = [
     selector: row => row.organization
   }
 ]
+// ** CSV Columns
 export const CsvDataColumns = [
   {
     id: 'product_number',
@@ -363,7 +336,7 @@ export const CsvDataColumns = [
   },
   {
     id: 'inventory',
-    displayName: 'OnHand Invnetory'
+    displayName: 'On Hand Inventory'
   },
   {
     id: 'isCatalog',
@@ -374,12 +347,8 @@ export const CsvDataColumns = [
     displayName: 'Item Type MBP'
   },
   {
-    id: 'name',
-    displayName: 'Full Name'
-  },
-  {
     id: 'organization',
-    displayName: 'Intellectual Owner'
+    displayName: 'Plant'
   },
   {
     id: 'part_revision',
@@ -396,18 +365,6 @@ export const CsvDataColumns = [
   {
     id: 'weight',
     displayName: 'Weight'
-  },
-  {
-    id: '_id',
-    displayName: 'Product Id'
-  },
-  {
-    id: '_key',
-    displayName: 'Product Key'
-  },
-  {
-    id: '_rev',
-    displayName: 'Product Rev'
   }
 ]
 
@@ -476,9 +433,6 @@ const ProductSearch = () => {
         window.location.href = '/search/search'
       }
     }
-    // return () => {
-    //   second
-    // }
   }, [])
 
   // ** Table data to render
@@ -746,7 +700,7 @@ const ProductSearch = () => {
             <Col lg='8' md='6' className='mb-1 m-auto'>
             {!isLoadingData && <div className='float-right'>
               <CsvDownload
-                filename="myfile"
+                filename="Products-Data"
                 extension=".csv"
                 separator=","
                 columns={CsvDataColumns}
@@ -817,6 +771,15 @@ const ProductSearch = () => {
           <InputState />
         </Col> */}
       </Row>
+      {/* <Modal scrollable isOpen={isOpenModel} toggle={() => setScrollInnerModal(!isOpenModel)}>
+        <ModalHeader toggle={() => setScrollInnerModal(!isOpenModel)}>Properties</ModalHeader>
+        <ModalBody>
+          <p></p>
+        </ModalBody>
+        <ModalFooter>
+          <Button color='primary' onClick={() => setScrollInnerModal(!scrollInnerModal)}/>
+        </ModalFooter>
+      </Modal> */}
       <br/><br/><br/><br/><br/><br/><br/><br/>
     </div>
   )

@@ -1,7 +1,7 @@
 import { Fragment, useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
-import Avatar from '@components/avatar'
+// import Avatar from '@components/avatar'
 import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
 import CsvDownload from 'react-csv-downloader'
 import ReactPaginate from 'react-paginate'
@@ -55,121 +55,6 @@ export const advSearchColumns = [
     minWidth: '200px',
     selector: row => row.PartNo
   },
-  // {
-  // name: 'Description',
-  // sortable: true,
-  // minWidth: '200px',
-  // selector: row => row.description
-  // },
-  // {
-  //   name: 'Properties',
-  //   sortable: true,
-  //   minWidth: '50px',
-  //   sortField: 'properties',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
-  //     return (
-  //       <Fragment>
-  //           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectProperties(row) }}/>
-  //       </Fragment>
-  //     )
-  //   }
-  //   },
-  // {
-  //   name: 'Drawing',
-  //   sortable: false,
-  //   minWidth: '50px',
-  //   sortField: 'drawingeu',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-  //       </Fragment>
-  //     )
-  //   }
-  // },
-  // {
-  //   name: 'Product Structure',
-  //   sortable: true,
-  //   minWidth: '150px',
-  //   sortField: 'productStrucuture',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
-  //       </Fragment>
-  //     )
-  //   }
-  // },
-  // {
-  //   name: 'ICS Product Structure',
-  //   sortable: true,
-  //   minWidth: '150px',
-  //   sortField: 'icsproduct',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-  //       </Fragment>
-  //     )
-  //   }
-  // },
-
-  // {
-  //   name: 'Where Used',
-  //   sortable: true,
-  //   minWidth: '100px',
-  //   sortField: 'whereused',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
-  //       </Fragment>
-  //     )
-  //   }
-  // },
-  // {
-  //   name: 'Implode',
-  //   sortable: true,
-  //   minWidth: '100px',
-  //   sortField:'Implode',
-  //   cell: row => {
-  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
-  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
-  //     return (
-  //       <Fragment>
-  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-  //       </Fragment>
-  //     )
-  //   }
-  // },
-  // {
-  //   name: 'AGR',
-  //   sortable: true,
-  //   minWidth: '2px',
-  //   selector: row => row.agr
-  // },
-  // {
-  //   name: 'EAU',
-  //   sortable: true,
-  //   minWidth: '2px',
-  //   selector: row => row.eau
-  // },
-  // {
-  //   name: 'OnHand Invnetory',
-  //   sortable: true,
-  //   minWidth: '50px',
-  //   selector: row => row.inventory
-  // },
   {
     name: 'Intellectual Owner',
     sortable: true,
