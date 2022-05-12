@@ -1,11 +1,14 @@
 // ** React Imports
 import { Fragment, useState} from 'react'
 import { Link } from 'react-router-dom'
+import Prism from 'prismjs'
 
 // ** Icons Imports
 // import Select from 'react-select'
 // import ReactSelect from './SelectReact'
 import { data, advSearchColumns } from '../../tables/data-tables/data'
+import ModalFormAndScroll from './ModalFormAndScroll'
+// import { modalForm } from '../ModalSourceCode'
 
 // ** Utils
 // import { selectThemeColors } from '@utils'
@@ -36,7 +39,7 @@ import DataTable from 'react-data-table-component'
 
 
 // ** Reactstrap Imports
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
+import {  Card, CardHeader, CardBody, CardTitle, Button, ModalHeader, ModalBody, ModalFooter, Modal, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
 // import Breadcrumbs from '@components/breadcrumbs'
 import '@styles/base/pages/ui-feather.scss'
 import '@styles/react/apps/app-invoice.scss'
@@ -65,6 +68,11 @@ import '@styles/react/apps/app-invoice.scss'
 // import '@styles/react/libs/charts/apex-charts.scss'
 
 
+const Modals = () => {
+  useEffect(() => {
+    Prism.highlightAll()
+  }, [])
+}
 const ProductSearch = () => {
   
   // const [Picker, setPicker] = useState('')
@@ -75,6 +83,8 @@ const ProductSearch = () => {
   // const [searchEmail, setSearchEmail] = useState('')
   // const [searchSalary, setSearchSalary] = useState('')
   const [filteredData, setFilteredData] = useState([])
+  const [scrollInnerModal, setScrollInnerModal] = useState(false)
+
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
@@ -313,8 +323,86 @@ const ProductSearch = () => {
   return (
     <div id='productsearch'>
       {/* <Breadcrumbs title='Product Search' data={[{ title: 'Proudct Search' }]} /> */}
-      <div class="">
-        <h4 class="card-title">Product Search</h4>
+      {/* <Card title='Form & Scrolling Modals' code={modalForm}>
+            <ModalFormAndScroll />
+      </Card> */}
+
+<Modal scrollable isOpen={scrollInnerModal} toggle={() => setScrollInnerModal(!scrollInnerModal)}>
+          <ModalHeader toggle={() => setScrollInnerModal(!scrollInnerModal)}>Modal Title</ModalHeader>
+          <ModalBody>
+            <p>
+              Biscuit powder jelly beans. Lollipop candy canes croissant icing chocolate cake. Cake fruitcake powder
+              pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels halvah chocolate bar. Cotton candy gummi
+              bears pudding pie apple pie cookie. Cheesecake jujubes lemon drops danish dessert I love caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll cake. Cupcake dessert icing dragée
+              dessert. Liquorice jujubes cake tart pie donut. Cotton candy candy canes lollipop liquorice chocolate
+              marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love powder sugar plum tiramisu. Liquorice
+              pudding chocolate cake cupcake topping biscuit. Lemon drops apple pie sesame snaps tootsie roll carrot
+              cake soufflé halvah. Biscuit powder jelly beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels halvah chocolate bar. Cotton candy gummi
+              bears pudding pie apple pie cookie. Cheesecake jujubes lemon drops danish dessert I love caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll cake. Cupcake dessert icing dragée
+              dessert. Liquorice jujubes cake tart pie donut. Cotton candy candy canes lollipop liquorice chocolate
+              marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love powder sugar plum tiramisu. Liquorice
+              pudding chocolate cake cupcake topping biscuit. Lemon drops apple pie sesame snaps tootsie roll carrot
+              cake soufflé halvah. Biscuit powder jelly beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels halvah chocolate bar. Cotton candy gummi
+              bears pudding pie apple pie cookie. Cheesecake jujubes lemon drops danish dessert I love caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll cake. Cupcake dessert icing dragée
+              dessert. Liquorice jujubes cake tart pie donut. Cotton candy candy canes lollipop liquorice chocolate
+              marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love powder sugar plum tiramisu. Liquorice
+              pudding chocolate cake cupcake topping biscuit. Lemon drops apple pie sesame snaps tootsie roll carrot
+              cake soufflé halvah. Biscuit powder jelly beans. Lollipop candy canes croissant icing chocolate cake. Cake
+              fruitcake powder pudding pastry.
+            </p>
+            <p>
+              Tootsie roll oat cake I love bear claw I love caramels caramels halvah chocolate bar. Cotton candy gummi
+              bears pudding pie apple pie cookie. Cheesecake jujubes lemon drops danish dessert I love caramels powder.
+            </p>
+            <p>
+              Chocolate cake icing tiramisu liquorice toffee donut sweet roll cake. Cupcake dessert icing dragée
+              dessert. Liquorice jujubes cake tart pie donut. Cotton candy candy canes lollipop liquorice chocolate
+              marzipan muffin pie liquorice.
+            </p>
+            <p>
+              Powder cookie jelly beans sugar plum ice cream. Candy canes I love powder sugar plum tiramisu. Liquorice
+              pudding chocolate cake cupcake topping biscuit. Lemon drops apple pie sesame snaps tootsie roll carrot
+              cake soufflé halvah.
+            </p>
+          </ModalBody>
+          <ModalFooter>
+            <Button color='primary' onClick={() => setScrollInnerModal(!scrollInnerModal)}>
+              Accept
+            </Button>
+          </ModalFooter>
+        </Modal>
+
+      <div className="">
+        <h4 className="card-title">Product Search</h4>
       </div>
       <Breadcrumb className='mb-1'>
         <BreadcrumbItem>
@@ -352,6 +440,7 @@ const ProductSearch = () => {
                 onChange={handleEmailFilter}
               />
             </Col> */}
+            {/* <button onClick={() => setScrollInnerModal(!scrollInnerModal)}>sd</button> */}
             <Col lg='4' md='6' className='mb-1'>
               <label className='form-label' for='drawingnumber ' />
                 Drawing Number:
@@ -381,6 +470,7 @@ const ProductSearch = () => {
               <Input id='salary' placeholder='10000' value={searchSalary} onChange={handleSalaryFilter} />
             </Col> */}
           </Row>
+        
         </CardBody>
         <div className='react-dataTable'>
           <DataTable
