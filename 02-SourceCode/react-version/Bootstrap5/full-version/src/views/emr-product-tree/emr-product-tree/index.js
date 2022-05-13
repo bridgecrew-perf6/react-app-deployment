@@ -1,9 +1,17 @@
-import React, {useState, useEffect } from 'react'
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
+import React, {useState, useEffect, Fragment } from 'react'
+import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem, ModalHeader, ModalBody, ModalFooter, Modal, UncontrolledTooltip } from 'reactstrap'
+import { ChevronDown, Download } from 'react-feather'
 import { Link } from 'react-router-dom'
 import Tree from 'react-animated-tree'
 import CsvDownload from 'react-csv-downloader'
-import resultsData from './apiresults.json'
+import ReactPaginate from 'react-paginate'
+import DataTable from 'react-data-table-component'
+import axios from 'axios'
+import { apiUrl } from '../../../serviceWorker'
+
+import '@styles/base/pages/ui-feather.scss'
+import '@styles/react/apps/app-invoice.scss'
+import '@styles/react/libs/tables/react-dataTable-component.scss'
 
 const generateNewResults = (resultsData) => {
   const  results = []
@@ -12,247 +20,32 @@ const generateNewResults = (resultsData) => {
   }
   return results
 }
-const TestTreeNode = (alldata, childName) => {
+const GenTreeNode = (alldata, childName) => {
   const findChilds = alldata.find(item => item.name === childName)
   if (findChilds === null || findChilds === undefined) {
     return <Tree key={childName} content={childName}/>
   } else {
     return <Tree key={childName} content={childName} visible>
       {findChilds.children.map(item => {
-        return TestTreeNode(alldata, item)
+        return GenTreeNode(alldata, item)
       })}
     </Tree>
   }
 }
-const data = { 
-  id: 1,
-  name: "8210G002-016",
-  children: [
-    {
-      id: 11,
-      name: "143490-001",
-      children: []
-    },
-    {
-      id: 12,
-      name: "238212-032",
-      children: []
-    },
-    {
-      id: 13,
-      name: "238754-502",
-      children: [
-        {
-          id: 131,
-          name: "000006-583-R",
-          children: []
-        },
-        {
-          id: 132,
-          name: "000006-950-R",
-          children: []
-        },
-        {
-          id: 133,
-          name: "073103-068-A2",
-          children: []
-        },
-        {
-          id: 134,
-          name: "143220-001",
-          children: []
-        },
-        {
-          id: 135,
-          name: "236857-001",
-          children: []
-        },
-        {
-          id: 136,
-          name: "238450-001",
-          children: []
-        },
-        {
-          id: 137,
-          name: "260689-001",
-          children: []
-        },
-        {
-          id: 138,
-          name: "266458-001",
-          children: []
-        },
-        {
-          id: 139,
-          name: "88122602",
-          children: []
-        }
-      ]
-    },
-    {
-      id: 14,
-      name: "240350-001",
-      children: [
-        {
-          id: 141,
-          name: "039619-033-70",
-          children: []
-        },
-        {
-          id: 142,
-          name: "039998-078",
-          children: [
-            {
-              id: 1421,
-              name: "073102-003-G1",
-              children: []
-            },
-            {
-              id: 1422,
-              name: "126299-001",
-              children: []
-            }
-          ]
-        },
-        {
-          id: 143,
-          name: "095487-001",
-          children: [
-            {
-              id: 1431,
-              name: "039619-001-50",
-              children: []
-            },
-            {
-              id: 1432,
-              name: "254706-001",
-              children: []
-            },
-            {
-              id: 1433,
-              name: "254708-001",
-              children: []
-            },
-            {
-              id: 1434,
-              name: "258205-002",
-              children: []
-            },
-            {
-              id: 1435,
-              name: "WC[R]ASSLY",
-              children: []
-            }
-          ]
-        },
-        {
-          id: 144,
-          name: "102045-001",
-          children: [
-            {
-              id: 1441,
-              name: "176332-001",
-              children: []
-            },
-            {
-              id: 1442,
-              name: "176333-001",
-              children: []
-            },
-            {
-              id: 1443,
-              name: "WC[R]ASSLY",
-              children: []
-            }
-          ]
-        },
-        {
-          id: 145,
-          name: "103032",
-          children: []
-        },
-        {
-          id: 146,
-          name: "123620-573",
-          children: []
-        },
-        {
-          id: 147,
-          name: "123620-573-RU",
-          children: []
-        },
-        {
-          id: 148,
-          name: "212860",
-          children: []
-        },
-        {
-          id: 149,
-          name: "222999-001",
-          children: [
-            {
-              id: 1491,
-              name: "126058",
-              children: []
-            }
-          ]
-        },
-        {
-          id: 1410,
-          name: "226156-001",
-          children: [
-            {
-              id: 14101,
-              name: "089634-002",
-              children: []
-            },
-            {
-              id: 14102,
-              name: "091248-002",
-              children: []
-            },
-            {
-              id: 14103,
-              name: "204242-003-A",
-              children: []
-            },
-            {
-              id: 14104,
-              name: "204244-001",
-              children: []
-            },
-            {
-              id: 14105,
-              name: "WC[R]ASSLY",
-              children: []
-            }
-          ]
-        }
-      ]
-    },
-    {
-      id: 15,
-      name: "432941-001",
-      children: []
-    },
-    {
-      id: 16,
-      name: "WC[R]ASSLY",
-      children: []
-    }
-  ]
-}
-const TreeNode = (obj) => {
-  if (obj.children.length === 0) {
-    return <Tree key={obj.id} content={obj.name}/>
-  } else {
-    return <Tree key={obj.id} content={obj.name} visible>
-      {obj.children.map(item => {
-        return TreeNode(item)
-      })}
-    </Tree>
+export const advSearchColumns = [
+  {
+    name: 'Node Level',
+    sortable: true,
+    minWidth: '200px',
+    selector: row => row.level
+  },
+  {
+    name: 'Catalog/Product #',
+    sortable: true,
+    minWidth: '50px',
+    selector: row => row.name
   }
-}
+]
 export const CsvDataColumns = [
   {
     id: 'level',
@@ -263,29 +56,120 @@ export const CsvDataColumns = [
     displayName: 'Catalog/Product #'
   }
 ]
+
 const csvExportData = []
-const setCSVData = (obj, i) => {
-  // let csvExportData = []
-  if (obj.children.length === 0) {
-    csvExportData.push({level: i, name: obj.name})
+const GenerateCSVData = (alldata, childName, i) => {
+  const newParent = alldata.find(item => item.name === childName)
+  if (newParent === undefined || newParent === null) {
+    csvExportData.push({level: i, name: childName})
   } else {
-    csvExportData.push({level: i, name: obj.name})
-    obj.children.map((item, j) => {
-      const newIndex = `${i}.${j + 1}`
-      setCSVData(item, newIndex)
+    csvExportData.push({level: i, name: childName})
+    newParent.children.map((item, j) => {
+      GenerateCSVData(alldata, item, `${i}.${j + 1}`)
     })
   }
 }
-// const generateAPIur
-const ProductTree = () => {
+
+const ProductStructure = () => {
   const [csvData, setcsvData] = useState([])
-  const [testcsvData, testsetcsvData] = useState([])
+  const [structureData, setStructureData] = useState([])
+  const [isLoadingData, SetIsLoadingData] = useState(true)
+  const [searchName, setSearchName] = useState('')
+  const [currentPage, setCurrentPage] = useState(0)
+  const [filteredData, setFilteredData] = useState([])
   
   useEffect(() => {
-    setCSVData(data, "1")
-    setcsvData(csvExportData)
-    testsetcsvData(generateNewResults(resultsData))
+    const prodNo = new URLSearchParams(window.location.search).get("productNo")
+    if (prodNo === undefined || prodNo === null) {
+      window.location.href = '/search/search'
+    } else {
+      const pNo = atob(prodNo)
+      axios.get(`${apiUrl}/part/bom?product_number=${pNo}`).then(response => {
+        console.log(response)
+        const results = generateNewResults(response.data)
+        setStructureData(results)
+        console.log(results)
+        if (results.length > 0) {
+          csvExportData.push({level: "1", name: results[0].name})
+          results[0].children.map((item, j) => {
+            GenerateCSVData(results, item, `1.${j + 1}`)
+          })
+        }
+        setcsvData(csvExportData)
+        SetIsLoadingData(false)
+      }).catch(err => {
+        SetIsLoadingData(false)
+        console.log(err)
+      })
+    }
   }, [])
+
+  // ** Function to handle Pagination
+  const handlePagination = page => setCurrentPage(page.selected)
+  // ** Table data to render
+  const dataToRender = () => {
+    if (
+      searchName.length
+      // searchPost.length ||
+      
+      // searchCity.length 
+      // searchSalary.length
+      // Picker.length
+    ) {
+      return filteredData
+    } else {
+      return csvData
+    }
+  }
+
+  // ** Custom Pagination
+  const paginationComponentOptions = {
+    rowsPerPageText: 'Records per page',
+    rangeSeparatorText: 'of',
+    selectAllRowsItem: true,
+    selectAllRowsItemText: 'All'
+  }
+  const CustomPagination = () => (
+    <ReactPaginate
+      previouslabel={''}
+      nextlabel={''}
+      forcePage={currentPage}
+      onPageChange={page => handlePagination(page)}
+      pageCount={Math.ceil(dataToRender().length / 10) || 1}
+      breaklabel={'...'}
+      pageRangeDisplayed={2}
+      marginPagesDisplayed={2}
+      activeClassName='active'
+      pageClassName='page-item'
+      breakClassName='page-item'
+      nextLinkClassName='page-link'
+      pageLinkClassName='page-link'
+      breakLinkClassName='page-link'
+      previousLinkClassName='page-link'
+      nextClassName='page-item next-item'
+      previousClassName='page-item prev-item'
+      containerClassName={'pagination react-paginate separated-pagination pagination-sm justify-content-end pe-1 mt-1'}
+    />
+  )
+
+  // ** Function to handle name filter
+  const handleSearchFilter = e => {
+    const value = e.target.value
+    let updatedData = []
+    setSearchName(value)
+    if (value.length) {
+      updatedData = csvData.filter(item => {
+        const includes = (item.level.toLowerCase().includes(value.toLowerCase()) ||
+        item.name.toLowerCase().includes(value.toLowerCase()))
+
+        if (includes) {
+          return includes
+        } else return null
+      })
+      setFilteredData([...updatedData])
+    }
+  }
+
   return (
     <div id='producttree'>
       <div className=""> 
@@ -299,35 +183,62 @@ const ProductTree = () => {
           <span> Product Structure</span>
         </BreadcrumbItem>
       </Breadcrumb>
-      <div>
-        <CsvDownload
-          filename="myfile"
-          extension=".csv"
-          separator=","
-          columns={CsvDataColumns}
-          datas={csvData}
-        >Export</CsvDownload>
-      </div>
-      <div style={{height: '100%', width: "2000px", overflowY: "auto" }}>
-        { data.children.length === 0 && <Tree content={data.name}/>}
-        { data.children.length >= 0 && <Tree key={data.id} content={data.name}  visible>
-            {data.children.map(item => {
-              return TreeNode(item)
-            })}
-          </Tree>
-        }
-        {/* Test Tree nodes */}
-        {
-          testcsvData.length > 0 && <Tree key={testcsvData[0].name} content={testcsvData[0].name} visible>
-           {testcsvData[0].children.map(item => {
-              return TestTreeNode(testcsvData, item)
-            })
-           }
-          </Tree>
-        }
-
-      </div>
+      {isLoadingData && <div className='text-center'> Loading.....</div>}
+      {!isLoadingData && <Fragment>
+        <Card>
+          <CardBody>
+          {
+            structureData.length > 0 && <Tree key={structureData[0].name} content={structureData[0].name} visible>
+            {structureData[0].children.map(item => {
+                return GenTreeNode(structureData, item)
+              })
+            }
+            </Tree>
+          }
+          </CardBody>
+        </Card>
+        <Row className='match-height'>
+          <Col sm='12'>
+            <Card>
+              <CardBody>
+                <Row className='mt-1 mb-50'>
+                  <Col lg='4' md='6' className='mb-1'>
+                    <label className='form-label' htmlFor='catalog/product' />
+                      Search:
+                    <Input id='name' placeholder='' value={searchName} onChange={handleSearchFilter} />
+                  </Col>
+                  <Col lg='8' md='6' className='mb-1 m-auto'>
+                  {!isLoadingData && <div className='float-right'>
+                    <CsvDownload
+                      filename="Product_Structure"
+                      extension=".csv"
+                      separator=","
+                      columns={CsvDataColumns}
+                      datas={csvData}
+                    >Export<Download/></CsvDownload>
+                  </div>}
+                  </Col>
+                </Row>
+              </CardBody>
+              <div className='react-dataTable'>
+                <DataTable
+                  noHeader
+                  pagination
+                  columns={advSearchColumns}
+                  paginationPerPage={10}
+                  className='react-dataTable'
+                  sortIcon={<ChevronDown size={10} />}
+                  paginationDefaultPage={currentPage + 1}
+                  paginationComponentOptions={paginationComponentOptions}
+                  paginationComponent={CustomPagination}
+                  data={dataToRender()}
+                />
+              </div>
+            </Card>
+          </Col>
+        </Row>
+      </Fragment>}
     </div>
   )
 }
-export default  ProductTree
+export default  ProductStructure

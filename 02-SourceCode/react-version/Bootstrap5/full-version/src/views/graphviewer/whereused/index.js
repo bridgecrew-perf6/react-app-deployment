@@ -114,7 +114,7 @@ const WhereUsed = () => {
       window.location.href = '/search/search'
     } else {
       const pNo = atob(prodNo)
-      axios.get(`${apiUrl}/whereused/product_number?product_number=${pNo}`).then(response => {
+      axios.get(`${apiUrl}/part/whereused?product_number=${pNo}`).then(response => {
         setData(response.data.result._documents)
         SetIsLoadingData(false)
         console.log(response.data.result._documents)
