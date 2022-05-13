@@ -17,6 +17,7 @@ import ProductSearchRoutes from './ProductSearch'
 import WhereUsedRoutes from './Emr-WhereUsed'
 import ProductTreeRoutes from './Emr-ProductTree'
 import SupplierSearchRoutes from './Emr-SupplierSearch'
+import DrawingSearchRoutes from './Emr-DrawingSearch'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -59,7 +60,8 @@ const Routes = [
   ...ProductSearchRoutes,
   ...ProductTreeRoutes,
   ...SupplierSearchRoutes,
-  ...WhereUsedRoutes
+  ...WhereUsedRoutes,
+  ...DrawingSearchRoutes
   
 ]
 

@@ -65,7 +65,7 @@ import { Fragment, useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import Avatar from '@components/avatar'
-import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
+import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart, Download } from 'react-feather'
 import CsvDownload from 'react-csv-downloader'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
@@ -108,10 +108,11 @@ const GenerateUrl = (x) => {
   console.log(url)
   return url
 }
-// const onSelectProperties = (val) => {
-//   console.log(val.product_number)
-//   window.open(`/productsearch/productstructure?productNo=${btoa(val.product_number)}`, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400")
-// }
+const onSelectDrawings = (val) => {
+  console.log(val.product_number)
+  window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`)
+  // window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400")
+}
 const onSelcetWhereUsed = (val) => {
   console.log(val.product_number)
   window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
@@ -207,7 +208,7 @@ export const advSearchColumns = [
         Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
       return (
         <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectDrawings(row) }}/>
         </Fragment>
       )
     }
@@ -382,7 +383,7 @@ const ProductSearch = () => {
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
-  const [searchData, setSearchData] = useState('')
+  // const [searchData, setSearchData] = useState('')
 
   // ** SET CSV Data
   const onSetCSVData = (CsvData) => {
@@ -416,7 +417,7 @@ const ProductSearch = () => {
       window.location.href = '/search/search'
     } else {
       const x = JSON.parse(atob(searchdata))
-      setSearchData(x)
+      // setSearchData(x)
       const url = GenerateUrl(x)
       if (url !== null) {
         axios.get(url).then(response => {
@@ -680,10 +681,10 @@ const ProductSearch = () => {
           <span> Product Search Results </span>
         </BreadcrumbItem>
       </Breadcrumb>
-      { searchData !== '' && <p><b>search data</b>: Location Code: "{searchData.LocationCode}", Field Type: "{searchData.FieldType}", 
+      {/* { searchData !== '' && <p><b>search data</b>: Location Code: "{searchData.LocationCode}", Field Type: "{searchData.FieldType}", 
       {searchData?.ProductNo !== undefined && <> Catalog/Product/Drawing/Part No : "{searchData.ProductNo}"</>}
       {searchData?.ProductNo === undefined && <> Min: "{searchData.Min}"", Max: "{searchData.Max}"</>}
-      </p>}
+      </p>} */}
       <Row className='match-height'>
         <Col sm='12'>
         <Card>
@@ -705,7 +706,7 @@ const ProductSearch = () => {
                 separator=","
                 columns={CsvDataColumns}
                 datas={csvData}
-              >Export</CsvDownload>
+              >Export<Download/></CsvDownload>
             </div>}
             </Col>
             {/* <Col lg='4' md='6' className='mb-1'>
