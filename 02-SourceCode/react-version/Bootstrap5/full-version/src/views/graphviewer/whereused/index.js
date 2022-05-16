@@ -4,18 +4,15 @@ import '@styles/base/pages/ui-feather.scss'
 import React, { Fragment, useState, useEffect} from 'react'
 import axios from 'axios'
 import Avatar from '@components/avatar'
-import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart } from 'react-feather'
-// import CsvDownload from 'react-csv-downloader'
+import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCircle, ArrowUpCircle, Image, Send, CheckCircle, Save, Info, PieChart, Download } from 'react-feather'
+import CsvDownload from 'react-csv-downloader'
 import DataTable from 'react-data-table-component'
 import ReactPaginate from 'react-paginate'
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem } from 'reactstrap'
+import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem, Modal, ModalBody, ModalHeader } from 'reactstrap'
 import '@styles/react/apps/app-invoice.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
 import { apiUrl } from '../../../serviceWorker'
 
-const onSelectProperties = (val) => {
-  console.log(val.product_number)
-}
 const onSelcetWhereUsed = (val) => {
   console.log(val.product_number)
   window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
@@ -32,6 +29,25 @@ const invoiceStatusObj = {
   UpArrow: { color: 'light-info', icon: ArrowUpCircle },
   'Past Due': { color: 'light-danger', icon: Info },
   'Partial Payment': { color: 'light-warning', icon: PieChart }
+}
+const PropertiesWindow = ({row}) => {
+  const [isOpenModel, setScrollInnerModal] = useState(false)
+  const color = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].color : 'light-danger',
+  Icon = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].icon : Edit
+
+  return (
+    <Fragment>
+      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.ProductNo}`} onClick={() => { setScrollInnerModal(true) }}/>
+      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }}>
+        <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
+        <ModalBody>
+          <p><span className='fw-bold'>Catalog/Product #:</span> {row.ProductNo}</p>
+          <p><span className='fw-bold'>Description:</span> {row.Description}</p>
+          <p><span className='fw-bold'>Quantity:</span> {row.Quantity}</p>
+        </ModalBody>
+      </Modal>
+    </Fragment>
+  )
 }
 export const advSearchColumns = [
   {
@@ -52,11 +68,9 @@ export const advSearchColumns = [
     minWidth: '50px',
     sortField: 'properties',
     cell: row => {
-      const color = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].color : 'light-danger',
-        Icon = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].icon : Edit
       return (
         <Fragment>
-            <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectProperties(row) }}/>
+          <PropertiesWindow row={row}/>
         </Fragment>
       )
     }
@@ -98,9 +112,23 @@ export const advSearchColumns = [
     selector: row => row.Quantity
   }
 ]
-
+export const CsvDataColumns = [
+  {
+    id: 'ProductNo',
+    displayName: 'Catalog/Product #'
+  },
+  {
+    id: 'Description',
+    displayName: 'Description'
+  },
+  {
+    id: 'Quantity',
+    name: 'Quantity'
+  }
+]
 const WhereUsed = () => {
   const [data, setData] = useState([])
+  const [csvData, setcsvData] = useState([])
   const [isLoadingData, SetIsLoadingData] = useState(true)
   const [searchName, setSearchName] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
@@ -116,8 +144,9 @@ const WhereUsed = () => {
       const pNo = atob(prodNo)
       axios.get(`${apiUrl}/part/whereused?product_number=${pNo}`).then(response => {
         setData(response.data.result._documents)
+        setcsvData(response.data.result._documents)
         SetIsLoadingData(false)
-        console.log(response.data.result._documents)
+        console.log(response)
       }).catch(err => {
         SetIsLoadingData(false)
         console.log(err)
@@ -216,17 +245,17 @@ const WhereUsed = () => {
                     Search:
                   <Input id='name' placeholder='' value={searchName} onChange={handleNameFilter} />
                 </Col>
-                {/* <Col lg='8' md='6' className='mb-1 m-auto'>
-                  !isLoadingData && <div className='float-right'>
+                <Col lg='8' md='6' className='mb-1 m-auto'>
+                  {!isLoadingData && <div className='float-right'>
                     <CsvDownload
-                      filename="myfile"
+                      filename="whereUsed_Data"
                       extension=".csv"
                       separator=","
                       columns={CsvDataColumns}
                       datas={csvData}
-                    >Export</CsvDownload>
-                  </div>
-                </Col> */}
+                    >Export<Download/></CsvDownload>
+                  </div>}
+                </Col>
               </Row>
             </CardBody>
             {isLoadingData && <div className='text-center'> Loading.....</div>}
