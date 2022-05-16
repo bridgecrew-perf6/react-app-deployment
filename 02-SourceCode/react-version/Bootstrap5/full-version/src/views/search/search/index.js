@@ -93,6 +93,7 @@ const Search = () => {
 
 
   const locationOptions = [
+    { value: 'GLOBAL', label: 'GLOBAL' },
     { value: 'AIN', label: 'AIN' },
     { value: 'AJP', label: 'AJP' },
     { value: 'AJF', label: 'AJF' },
@@ -106,117 +107,23 @@ const Search = () => {
     { value: 'NOVI', label: 'NOVI' },
     { value: 'SIR', label: 'SIR' }
   ]
-
-  // const acdcOptions = [
-  //   { value: 'AC', label: 'AC' },
-  //   { value: 'DC', label: 'DC' }
-  // ]
-
-  // const voltageOptions = [
-  //   { value: '100', label: '100' },
-  //   { value: '200', label: '200' },
-  //   { value: '300', label: '300' },
-  //   { value: '400', label: '400' }
-  // ]
-
-
-  // const categoryOptions = [
-  //   { value: '039169-001-50', label: '039169-001-50' },
-  //   { value: '039169-001-60', label: '039169-001-60' },
-  //   { value: '039169-001-70', label: '039169-001-70' },
-  //   { value: '039169-001-80', label: '039169-001-80' },
-  //   { value: '039169-001-FD', label: '039169-001-FD' }
-  // ]
-  /* ** Vars
-  const avatarGroupArr = [
-    {
-      imgWidth: 33,
-      imgHeight: 33,
-      title: 'Billy Hopkins',
-      placement: 'bottom',
-      img: require('@src/assets/images/portrait/small/avatar-s-9.jpg').default
-    },
-    {
-      imgWidth: 33,
-      imgHeight: 33,
-      title: 'Amy Carson',
-      placement: 'bottom',
-      img: require('@src/assets/images/portrait/small/avatar-s-6.jpg').default
-    },
-    {
-      imgWidth: 33,
-      imgHeight: 33,
-      title: 'Brandon Miles',
-      placement: 'bottom',
-      img: require('@src/assets/images/portrait/small/avatar-s-8.jpg').default
-    },
-    {
-      imgWidth: 33,
-      imgHeight: 33,
-      title: 'Daisy Weber',
-      placement: 'bottom',
-      img: require('@src/assets/images/portrait/small/avatar-s-7.jpg').default
-    },
-    {
-      imgWidth: 33,
-      imgHeight: 33,
-      title: 'Jenny Looper',
-      placement: 'bottom',
-      img: require('@src/assets/images/portrait/small/avatar-s-20.jpg').default
-    }
-  ]
-  const data = [
-    {
-      title: '12 Invoices have been paid',
-      content: 'Invoices have been paid to the company.',
-      meta: '',
-      metaClassName: 'me-1',
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <img className='me-1' src={jsonImg} alt='data.json' height='23' />
-          <span>data.json</span>
-        </div>
-      )
-    },
-    {
-      title: 'Client Meeting',
-      content: 'Project meeting with john @10:15am.',
-      meta: '',
-      metaClassName: 'me-1',
-      color: 'warning',
-      customContent: (
-        <div className='d-flex align-items-center'>
-          <Avatar img={ceo} />
-          <div className='ms-50'>
-            <h6 className='mb-0'>John Doe (Client)</h6>
-            <span>CEO of Infibeam</span>
-          </div>
-        </div>
-      )
-    },
-    {
-      title: 'Create a new project for client',
-      content: 'Add files to new design folder',
-      color: 'info',
-      meta: '',
-      metaClassName: 'me-1',
-      customContent: <AvatarGroup data={avatarGroupArr} />
-    },
-    {
-      title: 'Create a new project for client',
-      content: 'Add files to new design folder',
-      color: 'danger',
-      meta: '',
-      metaClassName: 'me-1'
-    }
-  ] */
+  
   const onChangeLocation = (e) => {
     setLocation(e.value)
+    setField('')
+    setFieldErrMsg('')
     setLocationErrMsg('')
+    setproductErrMsg('')
+    setMInMaxErrMsg('')
   }
   const onChangeField = (e) => {
     setField(e.value)
+    setProductNo('')
+    setMin('')
+    setMax('')
     setFieldErrMsg('')
+    setproductErrMsg('')
+    setMInMaxErrMsg('')
   }
   const onChangeCatelogProduct = (e) => {
     setProductNo(e.target.value)
@@ -230,26 +137,23 @@ const Search = () => {
     setMax(e.target.value)
     setMInMaxErrMsg('')
   }
-  // const onChangeACDC = (e) => {
-  //   console.log(e)
-  // }
-  // const onVoltage = (e) => {
-  //   console.log(e)
-  // }
   const validateForm = () => {
     let isValid = true
     if (location === '') {
       isValid = false
       setLocationErrMsg("Please choose the location!")
     }
-    if (field === '') {
+    if (location !== 'GLOBAL' && field === '') {
       isValid = false
       setFieldErrMsg("Please choose the field!")
     } else {
-      if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
+      if (location === 'GLOBAL' || field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
         if (productNo === '') {
           isValid = false
-          setproductErrMsg("Please enter Catalog/Product/Description/Drawing number!")
+          if (location === 'GLOBAL') setproductErrMsg("Please enter Catalog/Product/Part number!")
+          else if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
+          else if (field === "Description") setproductErrMsg("Please enter the description!")
+          else if (field === "Drawing Number") setproductErrMsg("Please enter Drawing number!")
         }
       } else {
         if ((min === -1 && max === -1) || (min === '' && max === '')) {
@@ -282,7 +186,7 @@ const Search = () => {
       return
     }
     let searchData = {}
-    if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
+    if (location === 'GLOBAL' || field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
       searchData = {...searchData,
         LocationCode: location,
         FieldType: field,
@@ -342,7 +246,7 @@ const Search = () => {
                   <span className='text-danger'> {locationErrMsg}</span>
                 </div>
 
-                <div className="col-md-6 mb-1">
+                { (location !== "GLOBAL") && <div className="col-md-6 mb-1">
                   <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
                   <Select
                     theme={selectThemeColors}
@@ -354,9 +258,15 @@ const Search = () => {
                     isClearable={false}
                   />
                   <span className='text-danger'> {fieldErrMsg}</span>
-                </div>
-
-                { (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
+                </div>}
+                { (location === "GLOBAL") && <div className="col-md-6 mb-1 mt-1">
+                  <label className='form-label w-100'>
+                    <span className='astrix'>*</span> Catalog, Product, or  Part Number <span className='f-10 float-right'>Solenoid Values only</span>
+                  </label>
+                  <input type='text' id='fieldInput' className='form-control' placeholder='Enter Catalog, Product, or Part Number' onChange={onChangeCatelogProduct} />
+                  <span className='text-danger'>{productErrMsg}</span>
+                </div>}
+                {(location !== "GLOBAL") &&  (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
                   <label className='form-label w-100'>
                     <span className='astrix'>*</span> Catalog, Product, Description or  Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
                   </label>
@@ -373,7 +283,7 @@ const Search = () => {
                   /> */}
                 </div>}
                
-                { (field === "AGR" || field === "EAU" || field === "StockInventory") && <div className="col-md-6 mb-1 row mt-1" >
+                {(location !== "GLOBAL") &&  (field === "AGR" || field === "EAU" || field === "StockInventory") && <div className="col-md-6 mb-1 row mt-1" >
                   <label className='form-label'>
                     Range
                   </label>

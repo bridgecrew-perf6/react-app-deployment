@@ -77,6 +77,7 @@ const ProductStructure = () => {
   const [searchName, setSearchName] = useState('')
   const [currentPage, setCurrentPage] = useState(0)
   const [filteredData, setFilteredData] = useState([])
+  const [timeTaken, setTimeTaken] = useState(0)
   
   useEffect(() => {
     const prodNo = new URLSearchParams(window.location.search).get("productNo")
@@ -84,6 +85,9 @@ const ProductStructure = () => {
       window.location.href = '/search/search'
     } else {
       const pNo = atob(prodNo)
+      const timer = setInterval(() => {
+        setTimeTaken(timeTaken => timeTaken + 1)
+      }, 1)
       axios.get(`${apiUrl}/part/bom?product_number=${pNo}`).then(response => {
         console.log(response)
         const results = generateNewResults(response.data)
@@ -97,8 +101,10 @@ const ProductStructure = () => {
         }
         setcsvData(csvExportData)
         SetIsLoadingData(false)
+        clearInterval(timer)
       }).catch(err => {
         SetIsLoadingData(false)
+        clearInterval(timer)
         console.log(err)
       })
     }
@@ -184,6 +190,13 @@ const ProductStructure = () => {
         </BreadcrumbItem>
       </Breadcrumb>
       {isLoadingData && <div className='text-center'> Loading.....</div>}
+      <Card>
+        <CardBody>
+          <Row className='mt-1 mb-50 '>
+            <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+          </Row>
+        </CardBody>
+      </Card>
       {!isLoadingData && <Fragment>
         <Card>
           <CardBody>

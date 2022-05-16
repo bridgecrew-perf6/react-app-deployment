@@ -12,16 +12,21 @@ import '@styles/react/apps/app-invoice.scss'
 import { apiUrl } from '../../../serviceWorker'
 const GenerateUrl = (x) => {
   let url = null
-  if (x.suppliername === "") {
-    const prodno = x.ProductNo
-    url = `${apiUrl}/supplier?product_number=${prodno}`
-  } else if (x.ProductNo === "") {
-    const supName = x.suppliername
-    url = `${apiUrl}/supplier?supplier_name=${supName}`
+  if (x.searchType === "Normal") {
+    if (x.suppliername === "") {
+      const prodno = x.ProductNo
+      url = `${apiUrl}/supplier?product_number=${prodno}`
+    } else if (x.ProductNo === "") {
+      const supName = x.suppliername
+      url = `${apiUrl}/supplier?supplier_name=${supName}`
+    } else {
+      const supName = x.suppliername
+      const prodno = x.ProductNo
+      url = `${apiUrl}/supplier?supplier_name=${supName}&product_number=${prodno}`
+    }
   } else {
     const supName = x.suppliername
-    const prodno = x.ProductNo
-    url = `${apiUrl}/supplier?supplier_name=${supName}&product_number=${prodno}`
+    url = `${apiUrl}/arangosearch/supplier_name?supplier_name=${supName}`
   }
   console.log(url)
   return url
@@ -34,11 +39,17 @@ export const advSearchColumns = [
     selector: row => row.PartNo
   },
   {
-    name: 'Intellectual Owner',
+    name: 'MPN',
     sortable: true,
-    minWidth: '50px',
-    selector: row => row.Part_Location
+    minWidth: '200px',
+    selector: row => row.MPN
   },
+  // {
+  //   name: 'Intellectual Owner',
+  //   sortable: true,
+  //   minWidth: '50px',
+  //   selector: row => row.Part_Location
+  // },
   {
     name: 'Assy. Item Status',
     sortable: true,
@@ -64,9 +75,13 @@ export const CsvDataColumns = [
     displayName: 'Catalog/Product #'
   },
   {
-    id: 'Part_Location',
-    displayName: 'Intellectual Owner'
+    id: 'MPN',
+    displayName: 'MPN'
   },
+  // {
+  //   id: 'Part_Location',
+  //   displayName: 'Intellectual Owner'
+  // },
   {
     id: 'Status',
     name: 'Status'
@@ -88,6 +103,7 @@ const SupplierSearchResults = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [filteredData, setFilteredData] = useState([])
   const [csvData, setcsvData] = useState([])
+  const [timeTaken, setTimeTaken] = useState(0)
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
@@ -101,7 +117,8 @@ const SupplierSearchResults = () => {
       const  suplierLoc = item.Supplier_Location !== null ? item.Supplier_Location.replaceAll(',', ' ') : item.Supplier_Location
       csvdata.push({
         PartNo: item.PartNo,
-        Part_Location: item.Part_Location,
+        MPN: item.MPN,
+        // Part_Location: item.Part_Location,
         Status: item.Status,
         Supplier: suplier,
         Supplier_Location: suplierLoc
@@ -119,14 +136,23 @@ const SupplierSearchResults = () => {
       // setSearchData(x)
       const url = GenerateUrl(x)
       if (url !== null) {
+        const timer = setInterval(() => {
+          setTimeTaken(timeTaken => timeTaken + 1)
+        }, 1)
         axios.get(url).then(response => {
-          setData(response.data.result._documents)
-          // setcsvData(response.data.result._documents)
-          onSetCSVData(response.data.result._documents)
+          if (response.data?.result) {
+            setData(response.data.result._documents)
+            onSetCSVData(response.data.result._documents)
+          } else {
+            setData(response.data)
+            onSetCSVData(response.data)
+          }
           SetIsLoadingData(false)
+          clearInterval(timer)
           console.log(response)
         }).catch(err => {
           SetIsLoadingData(false)
+          clearInterval(timer)
           console.log(err)
         })
       } else {
@@ -185,8 +211,10 @@ const SupplierSearchResults = () => {
     if (value.length) {
       updatedData = data.filter(item => {
         const partno = typeof item.PartNo  === "string" ? item.PartNo : item.PartNo.toString()
+        const mpn = typeof item.MPN  === "string" ? item.MPN : item.MPN.toString()
         const includes = (partno.toLowerCase().includes(value.toLowerCase())  ||
-        (item.Part_Location !== null && item.Part_Location !== "" && item.Part_Location.toLowerCase().includes(value.toLowerCase())) ||
+        (item.MPN !== null && item.MPN !== "" && mpn.toLowerCase().includes(value.toLowerCase())) ||
+        // (item.Part_Location !== null && item.Part_Location !== "" && item.Part_Location.toLowerCase().includes(value.toLowerCase())) ||
         (item.Status !== null && item.Status !== "" && item.Status.toLowerCase().includes(value.toLowerCase())) ||
         (item.Supplier !== null && item.Supplier !== "" && item.Supplier.toLowerCase().includes(value.toLowerCase())) ||
         (item.Supplier_Location !== null && item.Supplier_Location !== "" && item.Supplier_Location.toLowerCase().includes(value.toLowerCase())))
@@ -217,6 +245,9 @@ const SupplierSearchResults = () => {
         {searchData?.suppliername !== '' && <> Supplier Name: "{searchData.suppliername}"</>}
         {searchData?.ProductNo !== '' && <> Product/Part No : "{searchData.ProductNo}"</>}
       </p>} */}
+      <Row className='mt-1 mb-50 '>
+        <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+      </Row>
       <Row className='match-height'>
         <Col sm='12'>
         <Card>

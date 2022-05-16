@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Row, Col, Button, Breadcrumb, BreadcrumbItem  } from 'reactstrap'
 import '@styles/base/pages/ui-feather.scss'
@@ -7,6 +7,7 @@ const SupplierSearch = () => {
   const [supplier, setSupplier] = useState('')
   const [productNo, setProductNo] = useState('')
   const [suppErrMsg, setSupErrMsg] = useState('')
+  const [arangoSearch, setArangoSearch] = useState(false)
   
   const onChangeSupplier = (e) => {
     setSupplier(e.target.value)
@@ -16,11 +17,25 @@ const SupplierSearch = () => {
     setProductNo(e.target.value)
     setSupErrMsg('')
   }
+  const onSwitchBT_API_Arango = () => {
+    // e.preventDefault()
+    setSupplier('')
+    setProductNo('')
+    setSupErrMsg('')
+    setArangoSearch(!arangoSearch)
+  }
   const validateForm = () => {
     let isValid = true
-    if (supplier === '' && productNo === '') {
-      isValid = false
-      setSupErrMsg("Please enter supplier name or product number or both!")
+    if (!arangoSearch) {
+      if (supplier === '' && productNo === '') {
+        isValid = false
+        setSupErrMsg("Please enter supplier name or product number or both!")
+      }
+    } else {
+      if (supplier === '') {
+        isValid = false
+        setSupErrMsg("Please enter supplier name!")
+      }
     }
     return isValid
   }
@@ -29,9 +44,17 @@ const SupplierSearch = () => {
     if (!validateForm()) {
       return
     }
-    const searchData = {
+    let searchData = {
+      searchType: "Normal",
       suppliername: supplier,
       ProductNo: productNo
+    }
+    if (arangoSearch) {
+      searchData = {
+        searchType: "Arango",
+        suppliername: supplier,
+        ProductNo: productNo
+      }
     }
     console.log(searchData)
     localStorage.setItem('supplierSearchData', btoa(JSON.stringify(searchData)))
@@ -41,16 +64,21 @@ const SupplierSearch = () => {
   return (
     <div id='supliersearch'>
       <div className="">
-        <h4 className="card-title">Supplier Search</h4>
+        <h4 className="card-title">{ arangoSearch ? "Arango Supplier Search" : "Supplier Search"}</h4>
       </div>
       <Breadcrumb className='mb-1'>
         <BreadcrumbItem>
           <Link to='#'> Home </Link>
         </BreadcrumbItem>
         <BreadcrumbItem active>
-          <span> Supplier Search </span>
+          <span> {arangoSearch ? "Arango Supplier Search" : "Supplier Search"} </span>
         </BreadcrumbItem>
       </Breadcrumb>
+      <Row className='match-height'>
+        <div className="">
+          <Button.Ripple color='secondary' className="float-right" type="submit" onClick={onSwitchBT_API_Arango} >Switch To { !arangoSearch ? "Arango Search" : "API Search"} </Button.Ripple>
+        </div>
+      </Row>
       <Row className='match-height'>
         <Col sm='12'>
           <div className="col-md-12 col-lg-12">
@@ -61,17 +89,20 @@ const SupplierSearch = () => {
                   <label className='form-label w-100'>
                     <span className='astrix'>*</span> Supplier Name {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
                   </label>
-                  <input type='text' id='suplierInput' className='form-control' placeholder='Enter supplier name' onChange={onChangeSupplier} />
-                </div><div className="col-md-2 mb-1 mt-3 text-center">
-                  (OR)
+                  <input type='text' id='suplierInput' className='form-control' placeholder='Enter supplier name' onChange={onChangeSupplier} value={supplier}/>
                 </div>
-                <div className="col-md-5 mb-1 mt-1">
-                  <label className='form-label w-100'>
-                    <span className='astrix'>*</span> Product/Part Number {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
-                  </label>
-                  <input type='text' id='prodInput' className='form-control' placeholder='Enter Product or Part Number' onChange={onChangeProductNo} />
-                </div>
-                <span className='form-label w-100'>Note: You can search by both Supplier Name and Product number.</span>
+                { !arangoSearch && <Fragment>
+                  <div className="col-md-2 mb-1 mt-3 text-center">
+                    (OR)
+                  </div>
+                  <div className="col-md-5 mb-1 mt-1">
+                    <label className='form-label w-100'>
+                      <span className='astrix'>*</span> Product/Part Number {/* <span className='f-10 float-right'>Solenoid Values only</span> */}
+                    </label>
+                    <input type='text' id='prodInput' className='form-control' placeholder='Enter Product or Part Number' onChange={onChangeProductNo} />
+                  </div>
+                  <span className='form-label w-100'>Note: You can search by both Supplier Name and Product number.</span>
+                </Fragment>}
                 <span className='text-danger'>{suppErrMsg}</span>
               </div>
             </div>

@@ -77,6 +77,7 @@ const DrawingSearchResults = () => {
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
   // const [searchData, setSearchData] = useState('')
+  const [timeTaken, setTimeTaken] = useState(0)
 
   // ** SET CSV Data
   const onSetCSVData = (CsvData) => {
@@ -99,17 +100,23 @@ const DrawingSearchResults = () => {
     } else {
       const pNo = atob(prodNo)
       console.log(pNo)
+      const timer = setInterval(() => {
+        setTimeTaken(timeTaken => timeTaken + 1)
+      }, 1)
       const url = `${apiUrl}/drawing/by_product?product_number=${pNo}`
+      console.log(url)
       axios.get(url).then(response => {
         setData(response.data._documents)
         onSetCSVData(response.data._documents)
         SetIsLoadingData(false)
         SetIsLoadingData(false)
+        clearInterval(timer)
         console.log(response)
       }).catch(err => {
         SetIsLoadingData(false)
         alert("Not valid product no.")
         console.log(err)
+        clearInterval(timer)
         window.location.href = '/drawingsearch/drawingsearch'
       })
     }
@@ -172,11 +179,12 @@ const DrawingSearchResults = () => {
     if (value.length) {
       updatedData = data.filter(item => {
         const drawingno = typeof item.drawing_number  === "string" ? item.drawing_number : item.drawing_number.toString()
+        const drawingRevi = typeof item.drawing_revision  === "string" ? item.drawing_revision : item.drawing_revision.toString()
+        const drawingName = typeof item.name  === "string" ? item.name : item.name.toString()
         const includes = (drawingno.toLowerCase().includes(value.toLowerCase())  ||
-        (item.drawing_revision !== null && item.drawing_revision !== "" && item.drawing_revision.toLowerCase().includes(value.toLowerCase())) ||
+        (item.drawing_revision !== null && item.drawing_revision !== "" && drawingRevi.toLowerCase().includes(value.toLowerCase())) ||
         (item.organization !== null && item.organization !== "" && item.organization.toLowerCase().includes(value.toLowerCase())) ||
-        (item.isCatalog !== null && item.isCatalog !== "" && item.isCatalog.toLowerCase().includes(value.toLowerCase())) ||
-        (item.name !== null && item.name !== "" && item.name.toLowerCase().includes(value.toLowerCase())))
+        (item.name !== null && item.name !== "" && drawingName.toLowerCase().includes(value.toLowerCase())))
 
         if (includes) {
           return includes
@@ -202,6 +210,9 @@ const DrawingSearchResults = () => {
       {/* { searchData !== '' && <p><b>Search data</b>:
         {searchData?.drawingNo !== '' && <> DrawingNo : "{searchData.drawingNo}"</>}
       </p>} */}
+      <Row className='mt-1 mb-50 '>
+        <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+      </Row>
       <Row className='match-height'>
         <Col sm='12'>
         <Card>

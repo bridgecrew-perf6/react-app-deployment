@@ -77,7 +77,10 @@ import { apiUrl } from '../../../serviceWorker'
 
 const GenerateUrl = (x) => {
   let url = null
-  if (x.FieldType === "Catalog/ProductNo") {
+  if (x.LocationCode === "GLOBAL") {
+    const prodno = x.ProductNo
+    url = `${apiUrl}/part/global?product_number=${prodno}`
+  } else if (x.FieldType === "Catalog/ProductNo") {
     const loc = x.LocationCode
     const prodno = x.ProductNo
     url = `${apiUrl}/part?product_number=${prodno}&location=${loc}`
@@ -380,6 +383,7 @@ const ProductSearch = () => {
   const [filteredData, setFilteredData] = useState([])
   // const [csvColumns, setcsvcolumns] = useState([])
   const [csvData, setcsvData] = useState([])
+  const [timeTaken, setTimeTaken] = useState(0)
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
@@ -420,13 +424,18 @@ const ProductSearch = () => {
       // setSearchData(x)
       const url = GenerateUrl(x)
       if (url !== null) {
+        const timer = setInterval(() => {
+          setTimeTaken(timeTaken => timeTaken + 1)
+        }, 1)
         axios.get(url).then(response => {
           setData(response.data.result._documents)
           onSetCSVData(response.data.result._documents)
           SetIsLoadingData(false)
+          clearInterval(timer)
           console.log(response.data.result._documents)
         }).catch(err => {
           SetIsLoadingData(false)
+          clearInterval(timer)
           console.log(err)
         })
       } else {
@@ -692,6 +701,9 @@ const ProductSearch = () => {
           <CardTitle tag='h4'>Advance Search</CardTitle>
         </CardHeader> */}
         <CardBody>
+          <Row className='mt-1 mb-50 '>
+            <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+          </Row>
           <Row className='mt-1 mb-50'>
             <Col lg='4' md='6' className='mb-1'>
               <label className='form-label' htmlFor='catalog/product' />
