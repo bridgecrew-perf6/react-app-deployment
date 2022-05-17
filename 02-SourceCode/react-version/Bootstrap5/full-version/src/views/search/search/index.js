@@ -263,14 +263,14 @@ const Search = () => {
                   <label className='form-label w-100'>
                     <span className='astrix'>*</span> Catalog, Product, or  Part Number <span className='f-10 float-right'>Solenoid Values only</span>
                   </label>
-                  <input type='text' id='fieldInput' className='form-control' placeholder='Enter Catalog, Product, or Part Number' onChange={onChangeCatelogProduct} />
+                  <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, or Part Number' onChange={onChangeCatelogProduct} />
                   <span className='text-danger'>{productErrMsg}</span>
                 </div>}
                 {(location !== "GLOBAL") &&  (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
                   <label className='form-label w-100'>
                     <span className='astrix'>*</span> Catalog, Product, Description or  Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
                   </label>
-                  <input type='text' id='fieldInput' className='form-control' placeholder='Enter Catalog, Product, Description or Part Number' onChange={onChangeCatelogProduct} />
+                  <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, Description or Part Number' onChange={onChangeCatelogProduct} />
                   <span className='text-danger'>{productErrMsg}</span>
                   {/* <Select
                     theme={selectThemeColors}
@@ -289,11 +289,11 @@ const Search = () => {
                   </label>
                   <div className='col-md-6 '>
                     <label className='form-label'>Min</label>
-                    <input type='number' id='basicInput' className='form-control' min={0} placeholder='Min Value' onChange={onChangeMinValue} />
+                    <input type='number' id='basicInput' className='form-control' value={min} min={0} placeholder='Min Value' onChange={onChangeMinValue} />
                   </div>
                   <div className='col-md-6 mb-1'>
                     <label className='form-label'>Max</label>
-                    <input type='number' id='basicInput' className='form-control' min={0} placeholder='Max Value' onChange={onChangeMaxValue}/>
+                    <input type='number' id='basicInput' className='form-control' value={max} min={0} placeholder='Max Value' onChange={onChangeMaxValue}/>
                   </div>
                   <span className='text-danger'> {minMaxErrMsg}</span>
                 </div>}
