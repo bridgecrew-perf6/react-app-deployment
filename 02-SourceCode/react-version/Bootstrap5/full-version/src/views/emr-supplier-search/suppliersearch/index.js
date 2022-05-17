@@ -22,7 +22,7 @@ const SupplierSearch = () => {
     setSupplier('')
     setProductNo('')
     setSupErrMsg('')
-    setArangoSearch(!arangoSearch)
+    setArangoSearch((prevArangoSearch) => !prevArangoSearch)
   }
   const validateForm = () => {
     let isValid = true
