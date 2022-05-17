@@ -154,7 +154,7 @@ const PropertiesWindow = ({row}) => {
         <span className='fw-bold'>Standard Cost: {row.std_cost_current}</span><br />
         <span className='fw-bold'>Weight: {row.weight}</span>
       </UncontrolledTooltip> */}
-      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }}>
+      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }} centered={true}>
         <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
         <ModalBody>
           <p><span className='fw-bold'>Catalog/Product #:</span> {row.product_number}</p>

@@ -38,7 +38,7 @@ const PropertiesWindow = ({row}) => {
   return (
     <Fragment>
       <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.ProductNo}`} onClick={() => { setScrollInnerModal(true) }}/>
-      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }}>
+      <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }} centered={true}>
         <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
         <ModalBody>
           <p><span className='fw-bold'>Catalog/Product #:</span> {row.ProductNo}</p>
