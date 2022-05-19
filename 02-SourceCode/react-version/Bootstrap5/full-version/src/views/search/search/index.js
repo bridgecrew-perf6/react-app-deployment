@@ -1,5 +1,5 @@
 // ** React Imports
-import { useState } from 'react'
+import { Fragment, useState } from 'react'
 import { Link } from 'react-router-dom'
 
 // ** Icons Imports
@@ -70,6 +70,7 @@ const Search = () => {
   const [minMaxErrMsg, setMInMaxErrMsg] = useState('')
   // const [acdc, setAcdc] = useState('AC')
   // const [oltage, setOltage] = useState('100')
+  const [arangoSearch, setArangoSearch] = useState(false)
 
   // ** Context
   // const { colors } = useContext(ThemeColors)
@@ -90,7 +91,11 @@ const Search = () => {
     { value: 'Drawing Number', label: 'Drawing Number' },
     { value: 'StockInventory', label: 'Stock Inventory' }
   ]
-
+  const arangofieldOptions = [
+    { value: 'Catalog/ProductNo', label: 'Catalog/ProductNo' },
+    { value: 'Description', label: 'Description' }
+    // { value: 'PartSeries', label: 'Part series' }
+  ]
 
   const locationOptions = [
     { value: 'GLOBAL', label: 'GLOBAL' },
@@ -108,19 +113,37 @@ const Search = () => {
     { value: 'SIR', label: 'SIR' }
   ]
   
+  const onSwitchBT_API_Arango = () => {
+    setArangoSearch((prevArangoSearch) => !prevArangoSearch)
+    setField('')
+    setFieldErrMsg('')
+    setProductNo('')
+    setproductErrMsg('')
+  }
   const onChangeLocation = (e) => {
     setLocation(e.value)
-    setField('')
+    if (location === "GLOBAL" && e.value !== "GLOBAL") {
+      setField('')
+      setProductNo('')
+    } else if (location !== "GLOBAL" && e.value === "GLOBAL") {
+      setField('')
+      setProductNo('')
+    }
     setFieldErrMsg('')
     setLocationErrMsg('')
     setproductErrMsg('')
     setMInMaxErrMsg('')
+    if (e.value !== "GLOBAL") {
+      setArangoSearch(false)
+    }
   }
   const onChangeField = (e) => {
     setField(e.value)
-    setProductNo('')
-    setMin('')
-    setMax('')
+    if (field !== e.value) {
+      setProductNo('')
+      setMin('')
+      setMax('')
+    }
     setFieldErrMsg('')
     setproductErrMsg('')
     setMInMaxErrMsg('')
@@ -143,15 +166,32 @@ const Search = () => {
       isValid = false
       setLocationErrMsg("Please choose the location!")
     }
-    if (location !== 'GLOBAL' && field === '') {
-      isValid = false
-      setFieldErrMsg("Please choose the field!")
-    } else {
-      if (location === 'GLOBAL' || field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
+    if (location === 'GLOBAL') {
+      if (arangoSearch) {
+        if (field === "") {
+          isValid = false
+          setFieldErrMsg("Please choose the field!")
+        }
+        if (productNo === "") {
+          isValid = false
+          if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
+          else if (field === "Description") setproductErrMsg("Please enter the description!")
+        }
+      } else {
         if (productNo === '') {
           isValid = false
-          if (location === 'GLOBAL') setproductErrMsg("Please enter Catalog/Product/Part number!")
-          else if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
+          setproductErrMsg("Please enter Catalog/Product/Part number!")
+        }
+      }
+    } else {
+      if (field === "") {
+        isValid = false
+        setFieldErrMsg("Please choose the field!")
+      }
+      if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
+        if (productNo === '') {
+          isValid = false
+          if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
           else if (field === "Description") setproductErrMsg("Please enter the description!")
           else if (field === "Drawing Number") setproductErrMsg("Please enter Drawing number!")
         }
@@ -186,7 +226,13 @@ const Search = () => {
       return
     }
     let searchData = {}
-    if (location === 'GLOBAL' || field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
+    if (location === 'GLOBAL') {
+      searchData = {...searchData,
+        LocationCode: location,
+        FieldType: field,
+        ProductNo: productNo
+      }
+    } else if (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") {
       searchData = {...searchData,
         LocationCode: location,
         FieldType: field,
@@ -200,7 +246,7 @@ const Search = () => {
         Max: max
       }
     }
-    // console.log(searchData)
+    console.log(searchData)
     localStorage.setItem('searchData', btoa(JSON.stringify(searchData)))
     window.location.href = '/productsearch/productsearchresults'
     // const xx = btoa(JSON.stringify(searchData))
@@ -226,6 +272,11 @@ const Search = () => {
           <span> Product Search </span>
         </BreadcrumbItem>
       </Breadcrumb>
+      {location === "GLOBAL" && <Row className='match-height'>
+        <div className="">
+          <Button.Ripple color='secondary' className="float-right" type="submit" onClick={onSwitchBT_API_Arango} >Switch To { !arangoSearch ? "Arango Search" : "API Search"} </Button.Ripple>
+        </div>
+      </Row>}
       <Row className='match-height'>
         <Col sm='12'>
           <div className="col-md-12 col-lg-12">
@@ -245,82 +296,80 @@ const Search = () => {
                   />
                   <span className='text-danger'> {locationErrMsg}</span>
                 </div>
-
-                { (location !== "GLOBAL") && <div className="col-md-6 mb-1">
-                  <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
-                  <Select
-                    theme={selectThemeColors}
-                    className='react-select'
-                    classNamePrefix='select'
-                    defaultValue={field}
-                    onChange={onChangeField}
-                    options={fieldOptions}
-                    isClearable={false}
-                  />
-                  <span className='text-danger'> {fieldErrMsg}</span>
-                </div>}
-                { (location === "GLOBAL") && <div className="col-md-6 mb-1 mt-1">
+                { (location === "GLOBAL") && <Fragment>
+                  { arangoSearch && <div className="col-md-6 mb-1">
+                    <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
+                    <Select
+                      theme={selectThemeColors}
+                      className='react-select'
+                      classNamePrefix='select'
+                      defaultValue={field}
+                      onChange={onChangeField}
+                      options={arangofieldOptions}
+                      isClearable={false}
+                    />
+                    <span className='text-danger'> {fieldErrMsg}</span>
+                  </div>}
+                  { arangoSearch && <div className="col-md-6 mb-1 mt-1">
+                    <label className='form-label w-100'>
+                      <span className='astrix'>*</span> Catalog/Product/Part Number or Description<span className='f-10 float-right'>Solenoid Values only</span>
+                    </label>
+                    <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog/Product/Part Number or Description' onChange={onChangeCatelogProduct} />
+                    <span className='text-danger'>{productErrMsg}</span>
+                  </div>}
+                  { !arangoSearch && <div className="col-md-6 mb-1 mt-1">
                   <label className='form-label w-100'>
                     <span className='astrix'>*</span> Catalog, Product, or  Part Number <span className='f-10 float-right'>Solenoid Values only</span>
                   </label>
                   <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, or Part Number' onChange={onChangeCatelogProduct} />
                   <span className='text-danger'>{productErrMsg}</span>
                 </div>}
-                {(location !== "GLOBAL") &&  (field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
-                  <label className='form-label w-100'>
-                    <span className='astrix'>*</span> Catalog, Product, Description or  Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
-                  </label>
-                  <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, Description or Part Number' onChange={onChangeCatelogProduct} />
-                  <span className='text-danger'>{productErrMsg}</span>
-                  {/* <Select
-                    theme={selectThemeColors}
-                    className='react-select'
-                    classNamePrefix='select'
-                    defaultValue={categoryOptions[0]}
-                    onChange={onChangeCatelogProduct}
-                    options={categoryOptions}
-                    isClearable={false}
-                  /> */}
-                </div>}
-               
-                {(location !== "GLOBAL") &&  (field === "AGR" || field === "EAU" || field === "StockInventory") && <div className="col-md-6 mb-1 row mt-1" >
-                  <label className='form-label'>
-                    Range
-                  </label>
-                  <div className='col-md-6 '>
-                    <label className='form-label'>Min</label>
-                    <input type='number' id='basicInput' className='form-control' value={min} min={0} placeholder='Min Value' onChange={onChangeMinValue} />
+                </Fragment>}
+                { (location !== "GLOBAL") && <Fragment>
+                  <div className="col-md-6 mb-1">
+                    <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
+                    <Select
+                      theme={selectThemeColors}
+                      className='react-select'
+                      classNamePrefix='select'
+                      defaultValue={field}
+                      onChange={onChangeField}
+                      options={fieldOptions}
+                      isClearable={false}
+                    />
+                    <span className='text-danger'> {fieldErrMsg}</span>
                   </div>
-                  <div className='col-md-6 mb-1'>
-                    <label className='form-label'>Max</label>
-                    <input type='number' id='basicInput' className='form-control' value={max} min={0} placeholder='Max Value' onChange={onChangeMaxValue}/>
-                  </div>
-                  <span className='text-danger'> {minMaxErrMsg}</span>
-                </div>}
-                {/* <div className="col-md-6 mb-1 mt-1">
-                  <label className='form-label'>AC/DC</label>
-                  <Select
-                    theme={selectThemeColors}
-                    className='react-select'
-                    classNamePrefix='select'
-                    defaultValue={acdcOptions[0]}
-                    onChange={onChangeACDC}
-                    options={acdcOptions}
-                    isClearable={false}
-                  />
-                </div>
-                <div className="col-md-6 mb-1 mt-1">
-                  <label className='form-label'>Voltage</label>
-                  <Select
-                    theme={selectThemeColors}
-                    className='react-select'
-                    classNamePrefix='select'
-                    defaultValue={voltageOptions[0]}
-                    onChange={onVoltage}
-                    options={voltageOptions}
-                    isClearable={false}
-                  />
-                </div> */}
+                  {(field === "Catalog/ProductNo" || field === "Description" || field === "Drawing Number") && <div className="col-md-6 mb-1 mt-1">
+                    <label className='form-label w-100'>
+                      <span className='astrix'>*</span> Catalog, Product, Description or  Drawing Number <span className='f-10 float-right'>Solenoid Values only</span>
+                    </label>
+                    <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, Description or Part Number' onChange={onChangeCatelogProduct} />
+                    <span className='text-danger'>{productErrMsg}</span>
+                    {/* <Select
+                      theme={selectThemeColors}
+                      className='react-select'
+                      classNamePrefix='select'
+                      defaultValue={categoryOptions[0]}
+                      onChange={onChangeCatelogProduct}
+                      options={categoryOptions}
+                      isClearable={false}
+                    /> */}
+                  </div>}
+                  {(field === "AGR" || field === "EAU" || field === "StockInventory") && <div className="col-md-6 mb-1 row mt-1" >
+                    <label className='form-label'>
+                      Range
+                    </label>
+                    <div className='col-md-6 '>
+                      <label className='form-label'>Min</label>
+                      <input type='number' id='basicInput' className='form-control' value={min} min={0} placeholder='Min Value' onChange={onChangeMinValue} />
+                    </div>
+                    <div className='col-md-6 mb-1'>
+                      <label className='form-label'>Max</label>
+                      <input type='number' id='basicInput' className='form-control' value={max} min={0} placeholder='Max Value' onChange={onChangeMaxValue}/>
+                    </div>
+                    <span className='text-danger'> {minMaxErrMsg}</span>
+                  </div>}
+                </Fragment>}
                 <div className="col-md-6 text-center m-auto">
                  {/* <p className=' float-right'> <Book size={15}/> User Manual Click <a href=''>here</a></p> */}
                 </div>
@@ -328,7 +377,7 @@ const Search = () => {
             </div>
           </div>
           <div className="">
-            <Button.Ripple color='primary' className="float-right" type="submit" onClick={onSearch} >Search</Button.Ripple>
+            <Button.Ripple color='primary' className="float-right" type="submit" onClick={onSearch} > {arangoSearch ? "Arango" : "" } Search</Button.Ripple>
           </div>
         </Col>
         {/* <Col md='6' sm='12'>
@@ -347,6 +396,7 @@ const Search = () => {
           <InputState />
         </Col> */}
       </Row>
+      <br/><br/><br/>
     </div>
   )
 }

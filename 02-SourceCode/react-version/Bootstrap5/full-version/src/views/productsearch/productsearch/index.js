@@ -69,7 +69,7 @@ import { ChevronDown, MoreVertical, Edit, FileText, Archive, Trash, ArrowDownCir
 import CsvDownload from 'react-csv-downloader'
 import ReactPaginate from 'react-paginate'
 import DataTable from 'react-data-table-component'
-import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem, ModalHeader, ModalBody, ModalFooter, Modal, UncontrolledTooltip } from 'reactstrap'
+import {  Card, CardHeader, CardBody, CardTitle, Input, Row, Col, Breadcrumb, BreadcrumbItem, ModalHeader, ModalBody, ModalFooter, Modal, UncontrolledTooltip, Spinner } from 'reactstrap'
 import '@styles/base/pages/ui-feather.scss'
 import '@styles/react/apps/app-invoice.scss'
 import '@styles/react/libs/tables/react-dataTable-component.scss'
@@ -78,51 +78,61 @@ import { apiUrl } from '../../../serviceWorker'
 const GenerateUrl = (x) => {
   let url = null
   if (x.LocationCode === "GLOBAL") {
-    const prodno = x.ProductNo
-    url = `${apiUrl}/part/global?product_number=${prodno}`
-  } else if (x.FieldType === "Catalog/ProductNo") {
-    const loc = x.LocationCode
-    const prodno = x.ProductNo
-    url = `${apiUrl}/part?product_number=${prodno}&location=${loc}`
-  } else if (x.FieldType === "Description") {
-    const loc = x.LocationCode
-    const desc = x.ProductNo
-    url = `${apiUrl}/part?description=${desc}&location=${loc}`
-  } else if (x.FieldType === "Drawing Number") {
-    const loc = x.LocationCode
-    const drawNo = x.ProductNo
-    url = `${apiUrl}/part?drawing_number=${drawNo}&location=${loc}`
-  } else if (x.FieldType === "AGR") {
-    const loc = x.LocationCode
-    const agrmin = x.Min
-    const agrmax = x.Max
-    url = `${apiUrl}/part?location=${loc}&agr_min=${agrmin}&agr_max=${agrmax}`
-  } else if (x.FieldType === "EAU") {
-    const loc = x.LocationCode
-    const eaumin = x.Min
-    const eaumax = x.Max
-    url = `${apiUrl}/part?location=${loc}&eau_min=${eaumin}&eau_max=${eaumax}`
-  } else if (x.FieldType === "StockInventory") {
-    const loc = x.LocationCode
-    const envmin = x.Min
-    const envmax = x.Max
-    url = `${apiUrl}/part?location=${loc}&inv_min=${envmin}&inv_max=${envmax}`
-  }
+    if (x.FieldType === "Catalog/ProductNo") {
+      const prodno = x.ProductNo
+      url = `${apiUrl}/global?product_number=${prodno}`
+    } else if (x.FieldType === "Description") {
+      const desc = x.ProductNo
+      url = `${apiUrl}/global?description=${desc}`
+    } else {
+      const prodno = x.ProductNo
+      url = `${apiUrl}/part/global?product_number=${prodno}`
+    }
+  } else {
+    if (x.FieldType === "Catalog/ProductNo") {
+      const loc = x.LocationCode
+      const prodno = x.ProductNo
+      url = `${apiUrl}/part?product_number=${prodno}&location=${loc}`
+    } else if (x.FieldType === "Description") {
+      const loc = x.LocationCode
+      const desc = x.ProductNo
+      url = `${apiUrl}/part?location=${loc}&description=${desc}`
+    } else if (x.FieldType === "Drawing Number") {
+      const loc = x.LocationCode
+      const drawNo = x.ProductNo
+      url = `${apiUrl}/part?drawing_number=${drawNo}&location=${loc}`
+    } else if (x.FieldType === "AGR") {
+      const loc = x.LocationCode
+      const agrmin = x.Min
+      const agrmax = x.Max
+      url = `${apiUrl}/part?location=${loc}&agr_min=${agrmin}&agr_max=${agrmax}`
+    } else if (x.FieldType === "EAU") {
+      const loc = x.LocationCode
+      const eaumin = x.Min
+      const eaumax = x.Max
+      url = `${apiUrl}/part?location=${loc}&eau_min=${eaumin}&eau_max=${eaumax}`
+    } else if (x.FieldType === "StockInventory") {
+      const loc = x.LocationCode
+      const envmin = x.Min
+      const envmax = x.Max
+      url = `${apiUrl}/part?location=${loc}&inv_min=${envmin}&inv_max=${envmax}`
+    }
+  } 
   console.log(url)
   return url
 }
 const onSelectDrawings = (val) => {
-  console.log(val.product_number)
-  window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`)
+  console.log(val.Product_Number)
+  window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.Product_Number)}`)
   // window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400")
 }
 const onSelcetWhereUsed = (val) => {
-  console.log(val.product_number)
-  window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
+  console.log(val.Product_Number)
+  window.open(`/productsearch/whereused?productNo=${btoa(val.Product_Number)}`)
 }
 const onSelcetProductStructure = (val) => {
-  console.log(val.product_number)
-  window.open(`/productsearch/productstructure?productNo=${btoa(val.product_number)}`)
+  console.log(val.Product_Number)
+  window.open(`/productsearch/productstructure?productNo=${btoa(val.Product_Number)}`)
 }
 const invoiceStatusObj = {
   Edit: { color: 'light-secondary', icon: Edit },
@@ -136,12 +146,12 @@ const invoiceStatusObj = {
 
 const PropertiesWindow = ({row}) => {
   const [isOpenModel, setScrollInnerModal] = useState(false)
-  const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
-  Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
+  const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-danger',
+  Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : Edit
 
   return (
     <Fragment>
-      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.product_number}`} onClick={() => { setScrollInnerModal(true) }}/>
+      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { setScrollInnerModal(true) }}/>
       {/* <UncontrolledTooltip placement='bottom' target={`av-tooltip-${row.product_number}`}>
         <span className='fw-bold fs-30'>PROPERTIES</span><br />
         <span className='fw-bold text-left'>Catalog/Product #: {row.product_number}</span><br />
@@ -157,15 +167,15 @@ const PropertiesWindow = ({row}) => {
       <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }} centered={true}>
         <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
         <ModalBody>
-          <p><span className='fw-bold'>Catalog/Product #:</span> {row.product_number}</p>
-          <p><span className='fw-bold'>Description:</span> {row.description}</p>
-          <p><span className='fw-bold'>AGR:</span> {row.agr}</p>
-          <p><span className='fw-bold'>EAU:</span> {row.eau}</p>
-          <p><span className='fw-bold'>On Hand Inventory:</span> {row.inventory}</p>
-          <p><span className='fw-bold'>Plant:</span> {row.organization}</p>
-          <p><span className='fw-bold'>Status:</span> {row.status}</p>
-          <p><span className='fw-bold'>Standard Cost:</span> {row.std_cost_current}</p>
-          <p><span className='fw-bold'>Weight:</span> {row.weight}</p>
+          <p><span className='fw-bold'>Catalog/Product #:</span> {row.Product_Number}</p>
+          <p><span className='fw-bold'>Description:</span> {row.Description}</p>
+          <p><span className='fw-bold'>AGR:</span> {row.AGR}</p>
+          <p><span className='fw-bold'>EAU:</span> {row.EAU}</p>
+          <p><span className='fw-bold'>On Hand Inventory:</span> {row.On_Hand_Inventory}</p>
+          {/* <p><span className='fw-bold'>Plant:</span> {row.organization}</p> */}
+          {/* <p><span className='fw-bold'>Status:</span> {row.status}</p> */}
+          {/* <p><span className='fw-bold'>Standard Cost:</span> {row.std_cost_current}</p> */}
+          <p><span className='fw-bold'>Drawing Number:</span> {row.Drawing_Number}</p>
         </ModalBody>
       </Modal>
     </Fragment>
@@ -177,38 +187,29 @@ export const advSearchColumns = [
     name: 'Catalog/Product #',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.name
+    selector: row => row.Product_Number
   },
   {
   name: 'Description',
   sortable: true,
   minWidth: '200px',
-  selector: row => row.description
+  selector: row => row.Description
   },
   {
     name: 'Properties',
     sortable: true,
     minWidth: '50px',
     sortField: 'properties',
-    cell: row => {
-      // const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
-      // Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
-      return (
-        <Fragment>
-            {/* <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.product_number}`} onClick={() => { onSelectProperties(row) }}/> */}
-            <PropertiesWindow row={row}/>
-        </Fragment>
-      )
-    }
-    },
+    cell: row => <PropertiesWindow row={row}/>
+  },
   {
     name: 'Drawing',
     sortable: false,
     minWidth: '50px',
     sortField: 'drawingeu',
     cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
+      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-warning',
+        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : Image
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectDrawings(row) }}/>
@@ -222,8 +223,8 @@ export const advSearchColumns = [
     minWidth: '150px',
     sortField: 'productStrucuture',
     cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
+      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-primary',
+        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowDownCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
@@ -231,21 +232,21 @@ export const advSearchColumns = [
       )
     }
   },
-  {
-    name: 'ICS Product Structure',
-    sortable: true,
-    minWidth: '150px',
-    sortField: 'icsproduct',
-    cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
-      return (
-        <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-        </Fragment>
-      )
-    }
-  },
+  // {
+  //   name: 'ICS Product Structure',
+  //   sortable: true,
+  //   minWidth: '150px',
+  //   sortField: 'icsproduct',
+  //   cell: row => {
+  //     const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-primary',
+  //       Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowDownCircle
+  //     return (
+  //       <Fragment>
+  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+  //       </Fragment>
+  //     )
+  //   }
+  // },
 
   {
     name: 'Where Used',
@@ -253,8 +254,8 @@ export const advSearchColumns = [
     minWidth: '100px',
     sortField: 'whereused',
     cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
+      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-success',
+        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowUpCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
@@ -262,113 +263,113 @@ export const advSearchColumns = [
       )
     }
   },
-  {
-    name: 'Implode',
-    sortable: true,
-    minWidth: '100px',
-    sortField:'Implode',
-    cell: row => {
-      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
-        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
-      return (
-        <Fragment>
-          <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
-        </Fragment>
-      )
-    }
-  },
+  // {
+  //   name: 'Implode',
+  //   sortable: true,
+  //   minWidth: '100px',
+  //   sortField:'Implode',
+  //   cell: row => {
+  //     const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-success',
+  //       Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowUpCircle
+  //     return (
+  //       <Fragment>
+  //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
+  //       </Fragment>
+  //     )
+  //   }
+  // },
   {
     name: 'AGR',
     sortable: true,
     minWidth: '2px',
-    selector: row => row.agr
+    selector: row => row.AGR
   },
   {
     name: 'EAU',
     sortable: true,
     minWidth: '2px',
-    selector: row => row.eau
+    selector: row => row.EAU
   },
   {
     name: 'OnHand Invnetory',
     sortable: true,
     minWidth: '50px',
-    selector: row => row.inventory
+    selector: row => row.On_Hand_Inventory
   },
   {
     name: 'Drawing Number',
     sortable: true,
     minWidth: '50px',
-    selector: row => row.product_number
-  },
-  {
-    name: 'Drawing Version',
-    sortable: true,
-    minWidth: '50px',
-    selector: row => row.product_number
-  },
-  {
-    name: 'Assy. Item Status',
-    sortable: true,
-    minWidth: '100px',
-    selector: row => row.status
-  },
-  {
-    name: 'Intellectual Owner',
-    sortable: true,
-    minWidth: '100px',
-    selector: row => row.organization
+    selector: row => row.Drawing_Number
   }
+  // {
+  //   name: 'Drawing Version',
+  //   sortable: true,
+  //   minWidth: '50px',
+  //   selector: row => row.product_number
+  // },
+  // {
+  //   name: 'Assy. Item Status',
+  //   sortable: true,
+  //   minWidth: '100px',
+  //   selector: row => row.status
+  // },
+  // {
+  //   name: 'Intellectual Owner',
+  //   sortable: true,
+  //   minWidth: '100px',
+  //   selector: row => row.organization
+  // }
 ]
 // ** CSV Columns
 export const CsvDataColumns = [
   {
-    id: 'product_number',
+    id: 'Product_Number',
     displayName: 'Catalog/Product #'
   },
   {
-    id: 'description',
+    id: 'Description',
     displayName: 'Description'
   },
   {
-    id: 'agr',
+    id: 'AGR',
     name: 'AGR'
   },
   {
-    id: 'eau',
+    id: 'EAU',
     name: 'EAU'
   },
   {
-    id: 'inventory',
+    id: 'On_Hand_Inventory',
     displayName: 'On Hand Inventory'
   },
+  // {
+  //   id: 'isCatalog',
+  //   displayName: 'Is Catalog'
+  // },
+  // {
+  //   id: 'item_type_mbp',
+  //   displayName: 'Item Type MBP'
+  // },
+  // {
+  //   id: 'organization',
+  //   displayName: 'Plant'
+  // },
+  // {
+  //   id: 'part_revision',
+  //   displayName: 'Part Revision'
+  // },
+  // {
+  //   id: 'status',
+  //   displayName: 'Status'
+  // },
+  // {
+  //   id: 'std_cost_current',
+  //   displayName: 'Standard Cost'
+  // },
   {
-    id: 'isCatalog',
-    displayName: 'Is Catalog'
-  },
-  {
-    id: 'item_type_mbp',
-    displayName: 'Item Type MBP'
-  },
-  {
-    id: 'organization',
-    displayName: 'Plant'
-  },
-  {
-    id: 'part_revision',
-    displayName: 'Part Revision'
-  },
-  {
-    id: 'status',
-    displayName: 'Status'
-  },
-  {
-    id: 'std_cost_current',
-    displayName: 'Standard Cost'
-  },
-  {
-    id: 'weight',
-    displayName: 'Weight'
+    id: 'Drawing_Number',
+    displayName: 'Drawing Number'
   }
 ]
 
@@ -394,22 +395,29 @@ const ProductSearch = () => {
     const csvdata = []
     CsvData.map(item => {
       csvdata.push({
-        agr: item.agr,
-        description: item.description,
-        eau: item.eau,
-        inventory: item.inventory,
-        isCatalog: item.isCatalog,
-        item_type_mbp: item.item_type_mbp,
-        name: item.name,
-        organization: item.organization,
-        part_revision: item.part_revision,
-        product_number: item.product_number,
-        status: item.status,
-        std_cost_current: item.std_cost_current,
-        weight: item.weight,
-        _id: item._id,
-        _key: item._key,
-        _rev: item._rev
+        Product_Number: item.Product_Number,
+        Description: item.Description.replaceAll(',', ' '),
+        AGR: item.AGR,
+        EAU: item.EAU,
+        On_Hand_Inventory: item.On_Hand_Inventory,
+        Drawing_Number: item.Drawing_Number,
+        _id: item._id
+        // agr: item.agr,
+        // description: item.description,
+        // eau: item.eau,
+        // inventory: item.inventory,
+        // isCatalog: item.isCatalog,
+        // item_type_mbp: item.item_type_mbp,
+        // name: item.name,
+        // organization: item.organization,
+        // part_revision: item.part_revision,
+        // product_number: item.product_number,
+        // status: item.status,
+        // std_cost_current: item.std_cost_current,
+        // weight: item.weight,
+        // _id: item._id,
+        // _key: item._key,
+        // _rev: item._rev
       })
     })
     setcsvData(csvdata)
@@ -428,11 +436,17 @@ const ProductSearch = () => {
           setTimeTaken(timeTaken => timeTaken + 1)
         }, 1)
         axios.get(url).then(response => {
-          setData(response.data.result._documents)
-          onSetCSVData(response.data.result._documents)
+          console.log(response)
+          if (response.data?.result) {
+            setData(response.data.result._documents)
+            onSetCSVData(response.data.result._documents)
+          } else {
+          setData(response.data)
+          onSetCSVData(response.data)
+          }
+          
           SetIsLoadingData(false)
           clearInterval(timer)
-          console.log(response.data.result._documents)
         }).catch(err => {
           SetIsLoadingData(false)
           clearInterval(timer)
@@ -498,8 +512,8 @@ const ProductSearch = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = data.filter(item => {
-        const productName = typeof item.name === "string" ? item.name : item.name.toString()
-        const includes = (productName.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
+        const productName = typeof item.Product_Number === "string" ? item.Product_Number : item.Product_Number.toString()
+        const includes = (productName.toLowerCase().includes(value.toLowerCase()) || item.Description.toLowerCase().includes(value.toLowerCase()))
 
         if (includes) {
           return includes
@@ -675,6 +689,16 @@ const ProductSearch = () => {
 
   return (
     <div id='productsearch'>
+      {isLoadingData && 
+        <Modal scrollable isOpen={isLoadingData} centered={true}>
+          <ModalBody>
+            <div className='text-center' style={{height: "80px"}}>
+              <Spinner animation="border" variant="primary" style={{height: "70px", width: "70px", color: "blue"}}/>
+            </div>
+            {/* <p>Loading.....</p> */}
+          </ModalBody>
+        </Modal>
+      }
       {/* <Breadcrumbs title='Product Search' data={[{ title: 'Proudct Search' }]} /> */}
       <div className="">
         <h4 className="card-title">Product Search Results</h4>
@@ -751,7 +775,7 @@ const ProductSearch = () => {
             </Col> */}
           </Row>
         </CardBody>
-        {isLoadingData && <div className='text-center'> Loading.....</div>}
+        {isLoadingData && <p className='text-center'>Loading.....</p>}
         {!isLoadingData && <div className='react-dataTable'>
           <DataTable
             noHeader

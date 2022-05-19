@@ -189,7 +189,6 @@ const ProductStructure = () => {
           <span> Product Structure</span>
         </BreadcrumbItem>
       </Breadcrumb>
-      {isLoadingData && <div className='text-center'> Loading.....</div>}
       <Card>
         <CardBody>
           <Row className='mt-1 mb-50 '>
@@ -197,6 +196,7 @@ const ProductStructure = () => {
           </Row>
         </CardBody>
       </Card>
+      {isLoadingData && <div className='text-center'> Loading.....</div>}
       {!isLoadingData && <Fragment>
         <Card>
           <CardBody>
@@ -207,6 +207,9 @@ const ProductStructure = () => {
               })
             }
             </Tree>
+          }
+          {
+            structureData.length === 0 && <p>There are no records to display product structure</p>
           }
           </CardBody>
         </Card>
