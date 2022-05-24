@@ -34,7 +34,10 @@ export const advSearchColumns = [
     name: 'IsCatalog',
     sortable: true,
     minWidth: '100px',
-    selector: row => row.isCatalog
+    selector: row => {
+      if (row.status !== null) return row.isCatalog.toString()
+      else return row.isCatalog
+    }
   },
   {
     name: 'Drawing Name',
@@ -87,7 +90,7 @@ const DrawingSearchResults = () => {
         drawing_number: item.drawing_number,
         drawing_revision: item.drawing_revision,
         organization: item.organization,
-        isCatalog: item.isCatalog,
+        isCatalog: item.isCatalog === null ? item.isCatalog : item.isCatalog.toString(),
         name: item.name
       })
     })
@@ -106,23 +109,19 @@ const DrawingSearchResults = () => {
       const url = `${apiUrl}/drawing/by_product?product_number=${pNo}`
       console.log(url)
       axios.get(url).then(response => {
-        setData(response.data._documents)
-        onSetCSVData(response.data._documents)
+        console.log(response)
+        setData(response.data.result._documents)
+        onSetCSVData(response.data.result._documents)
         SetIsLoadingData(false)
         SetIsLoadingData(false)
         clearInterval(timer)
-        console.log(response)
       }).catch(err => {
         SetIsLoadingData(false)
-        alert("Not valid product no.")
         console.log(err)
         clearInterval(timer)
         window.location.href = '/drawingsearch/drawingsearch'
       })
     }
-    // return () => {
-    //   second
-    // }
   }, [])
 
   // ** Table data to render
@@ -183,6 +182,7 @@ const DrawingSearchResults = () => {
         const drawingName = typeof item.name  === "string" ? item.name : item.name.toString()
         const includes = (drawingno.toLowerCase().includes(value.toLowerCase())  ||
         (item.drawing_revision !== null && item.drawing_revision !== "" && drawingRevi.toLowerCase().includes(value.toLowerCase())) ||
+        (item.isCatalog !== null && item.isCatalog !== "" && item.isCatalog.toString().includes(value.toLowerCase())) ||
         (item.organization !== null && item.organization !== "" && item.organization.toLowerCase().includes(value.toLowerCase())) ||
         (item.name !== null && item.name !== "" && drawingName.toLowerCase().includes(value.toLowerCase())))
 

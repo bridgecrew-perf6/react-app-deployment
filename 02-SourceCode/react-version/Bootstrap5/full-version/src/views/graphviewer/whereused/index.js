@@ -32,18 +32,18 @@ const invoiceStatusObj = {
 }
 const PropertiesWindow = ({row}) => {
   const [isOpenModel, setScrollInnerModal] = useState(false)
-  const color = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].color : 'light-danger',
-  Icon = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].icon : Edit
+  const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
+  Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
 
   return (
     <Fragment>
-      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row.ProductNo}`} onClick={() => { setScrollInnerModal(true) }}/>
+      <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { setScrollInnerModal(true) }}/>
       <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }} centered={true}>
         <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
         <ModalBody>
-          <p><span className='fw-bold'>Catalog/Product #:</span> {row.ProductNo}</p>
-          <p><span className='fw-bold'>Description:</span> {row.Description}</p>
-          <p><span className='fw-bold'>Quantity:</span> {row.Quantity}</p>
+          <p><span className='fw-bold'>Catalog/Product #:</span> {row.product_number}</p>
+          <p><span className='fw-bold'>Description:</span> {row.description}</p>
+          <p><span className='fw-bold'>Quantity:</span> {row.quantity}</p>
         </ModalBody>
       </Modal>
     </Fragment>
@@ -54,13 +54,13 @@ export const advSearchColumns = [
     name: 'Catalog/Product #',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.ProductNo
+    selector: row => row.product_number
   },
   {
     name: 'Description',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.Description
+    selector: row => row.description
   },
   {
     name: 'Properties',
@@ -81,8 +81,8 @@ export const advSearchColumns = [
     minWidth: '150px',
     sortField: 'productStrucuture',
     cell: row => {
-      const color = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].color : 'light-primary',
-        Icon = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].icon : ArrowDownCircle
+      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
+        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
@@ -96,8 +96,8 @@ export const advSearchColumns = [
     minWidth: '100px',
     sortField: 'whereused',
     cell: row => {
-      const color = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].color : 'light-success',
-        Icon = invoiceStatusObj[row.ProductNo] ? invoiceStatusObj[row.ProductNo].icon : ArrowUpCircle
+      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
+        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
@@ -109,20 +109,20 @@ export const advSearchColumns = [
     name: 'Quantity',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.Quantity
+    selector: row => row.quantity
   }
 ]
 export const CsvDataColumns = [
   {
-    id: 'ProductNo',
+    id: 'product_number',
     displayName: 'Catalog/Product #'
   },
   {
-    id: 'Description',
+    id: 'description',
     displayName: 'Description'
   },
   {
-    id: 'Quantity',
+    id: 'quantity',
     name: 'Quantity'
   }
 ]
@@ -134,6 +134,7 @@ const WhereUsed = () => {
   const [currentPage, setCurrentPage] = useState(0)
   const [filteredData, setFilteredData] = useState([])
   const handlePagination = page => setCurrentPage(page.selected)
+  const [timeTaken, setTimeTaken] = useState(0)
   
   useEffect(() => {
     const prodNo = new URLSearchParams(window.location.search).get("productNo")
@@ -142,12 +143,17 @@ const WhereUsed = () => {
       window.location.href = '/search/search'
     } else {
       const pNo = atob(prodNo)
+      const timer = setInterval(() => {
+        setTimeTaken(timeTaken => timeTaken + 1)
+      }, 0.9)
       axios.get(`${apiUrl}/part/whereused?product_number=${pNo}`).then(response => {
         setData(response.data.result._documents)
         setcsvData(response.data.result._documents)
         SetIsLoadingData(false)
         console.log(response)
+        clearInterval(timer)
       }).catch(err => {
+        clearInterval(timer)
         SetIsLoadingData(false)
         console.log(err)
       })
@@ -208,10 +214,10 @@ const WhereUsed = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = data.filter(item => {
-        const productName = typeof item.ProductNo === "string" ? item.ProductNo : item.ProductNo.toString()
+        const productName = typeof item.product_number === "string" ? item.product_number : item.product_number.toString()
         const includes = (productName.toLowerCase().includes(value.toLowerCase()) 
-        || item.Description.toLowerCase().includes(value.toLowerCase())
-        || item.Quantity.toLowerCase().includes(value.toLowerCase()))
+        || item.description.toLowerCase().includes(value.toLowerCase())
+        || (item.quantity !== null && item.quantity !== "" && item.quantity.includes(value.toLowerCase())))
 
         if (includes) {
           return includes
@@ -235,6 +241,9 @@ const WhereUsed = () => {
           <span> Product where used </span>
         </BreadcrumbItem>
       </Breadcrumb>
+      <Row className='mt-1 mb-50 '>
+        <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+      </Row>
       <Row className='match-height'>
         <Col sm='12'>
           <Card>

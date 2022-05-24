@@ -80,14 +80,19 @@ const GenerateUrl = (x) => {
   if (x.LocationCode === "GLOBAL") {
     if (x.FieldType === "Catalog/ProductNo") {
       const prodno = x.ProductNo
-      url = `${apiUrl}/global?product_number=${prodno}`
+      if (x?.AragoSearch) {
+        url = `${apiUrl}/part/global?product_number=${prodno}`
+      } else {
+        url = `${apiUrl}/part/global?product_number=${prodno}`
+      }
     } else if (x.FieldType === "Description") {
       const desc = x.ProductNo
-      url = `${apiUrl}/global?description=${desc}`
-    } else {
-      const prodno = x.ProductNo
-      url = `${apiUrl}/part/global?product_number=${prodno}`
-    }
+      if (x?.AragoSearch) {
+        url = `${apiUrl}/part/global?description=${desc}`
+      } else {
+        url = `${apiUrl}/part/global?description=${desc}`
+      }
+    } 
   } else {
     if (x.FieldType === "Catalog/ProductNo") {
       const loc = x.LocationCode
@@ -122,17 +127,17 @@ const GenerateUrl = (x) => {
   return url
 }
 const onSelectDrawings = (val) => {
-  console.log(val.Product_Number)
-  window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.Product_Number)}`)
+  console.log(val.product_number)
+  window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`)
   // window.open(`/drawingsearch/drawingsearchresults?productNo=${btoa(val.product_number)}`, "_blank", "toolbar=yes,scrollbars=yes,resizable=yes,top=500,left=500,width=400,height=400")
 }
 const onSelcetWhereUsed = (val) => {
-  console.log(val.Product_Number)
-  window.open(`/productsearch/whereused?productNo=${btoa(val.Product_Number)}`)
+  console.log(val.product_number)
+  window.open(`/productsearch/whereused?productNo=${btoa(val.product_number)}`)
 }
 const onSelcetProductStructure = (val) => {
-  console.log(val.Product_Number)
-  window.open(`/productsearch/productstructure?productNo=${btoa(val.Product_Number)}`)
+  console.log(val.product_number)
+  window.open(`/productsearch/productstructure?productNo=${btoa(val.product_number)}`)
 }
 const invoiceStatusObj = {
   Edit: { color: 'light-secondary', icon: Edit },
@@ -146,8 +151,8 @@ const invoiceStatusObj = {
 
 const PropertiesWindow = ({row}) => {
   const [isOpenModel, setScrollInnerModal] = useState(false)
-  const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-danger',
-  Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : Edit
+  const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-danger',
+  Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Edit
 
   return (
     <Fragment>
@@ -167,15 +172,16 @@ const PropertiesWindow = ({row}) => {
       <Modal scrollable isOpen={isOpenModel} toggle={() => { setScrollInnerModal(false) }} centered={true}>
         <ModalHeader toggle={() => { setScrollInnerModal(false) }}>PROPERTIES</ModalHeader>
         <ModalBody>
-          <p><span className='fw-bold'>Catalog/Product #:</span> {row.Product_Number}</p>
-          <p><span className='fw-bold'>Description:</span> {row.Description}</p>
-          <p><span className='fw-bold'>AGR:</span> {row.AGR}</p>
-          <p><span className='fw-bold'>EAU:</span> {row.EAU}</p>
-          <p><span className='fw-bold'>On Hand Inventory:</span> {row.On_Hand_Inventory}</p>
-          {/* <p><span className='fw-bold'>Plant:</span> {row.organization}</p> */}
-          {/* <p><span className='fw-bold'>Status:</span> {row.status}</p> */}
-          {/* <p><span className='fw-bold'>Standard Cost:</span> {row.std_cost_current}</p> */}
-          <p><span className='fw-bold'>Drawing Number:</span> {row.Drawing_Number}</p>
+          <p><span className='fw-bold'>Catalog/Product #:</span> {row.product_number}</p>
+          <p><span className='fw-bold'>Description:</span> {row.description}</p>
+          <p><span className='fw-bold'>AGR:</span> {row.agr}</p>
+          <p><span className='fw-bold'>EAU:</span> {row.eau}</p>
+          <p><span className='fw-bold'>On Hand Inventory:</span> {row.on_hand_inventory}</p>
+          <p><span className='fw-bold'>Drawing Number:</span> {row.drawing_number}</p>
+          <p><span className='fw-bold'>Drawing Version:</span> {row.drawing_revision}</p>
+          <p><span className='fw-bold'>Assy. Item Status:</span> {row.assy_item_status}</p>
+          <p><span className='fw-bold'>Is_Catalog:</span> {row.is_catalog}</p>
+          <p><span className='fw-bold'>Intellectual Owner:</span> {row.plant}</p>
         </ModalBody>
       </Modal>
     </Fragment>
@@ -187,13 +193,13 @@ export const advSearchColumns = [
     name: 'Catalog/Product #',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.Product_Number
+    selector: row => row.product_number
   },
   {
   name: 'Description',
   sortable: true,
   minWidth: '200px',
-  selector: row => row.Description
+  selector: row => row.description
   },
   {
     name: 'Properties',
@@ -208,8 +214,8 @@ export const advSearchColumns = [
     minWidth: '50px',
     sortField: 'drawingeu',
     cell: row => {
-      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-warning',
-        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : Image
+      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-warning',
+        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : Image
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelectDrawings(row) }}/>
@@ -223,8 +229,8 @@ export const advSearchColumns = [
     minWidth: '150px',
     sortField: 'productStrucuture',
     cell: row => {
-      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-primary',
-        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowDownCircle
+      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
+        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetProductStructure(row) }}/>
@@ -238,8 +244,8 @@ export const advSearchColumns = [
   //   minWidth: '150px',
   //   sortField: 'icsproduct',
   //   cell: row => {
-  //     const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-primary',
-  //       Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowDownCircle
+  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-primary',
+  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowDownCircle
   //     return (
   //       <Fragment>
   //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
@@ -247,15 +253,14 @@ export const advSearchColumns = [
   //     )
   //   }
   // },
-
   {
     name: 'Where Used',
     sortable: true,
     minWidth: '100px',
     sortField: 'whereused',
     cell: row => {
-      const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-success',
-        Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowUpCircle
+      const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
+        Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
       return (
         <Fragment>
           <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} onClick={() => { onSelcetWhereUsed(row) }}/>
@@ -269,8 +274,8 @@ export const advSearchColumns = [
   //   minWidth: '100px',
   //   sortField:'Implode',
   //   cell: row => {
-  //     const color = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].color : 'light-success',
-  //       Icon = invoiceStatusObj[row.Product_Number] ? invoiceStatusObj[row.Product_Number].icon : ArrowUpCircle
+  //     const color = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].color : 'light-success',
+  //       Icon = invoiceStatusObj[row.product_number] ? invoiceStatusObj[row.product_number].icon : ArrowUpCircle
   //     return (
   //       <Fragment>
   //         <Avatar color={color} icon={<Icon size={14} />} id={`av-tooltip-${row._id}`} />
@@ -282,95 +287,96 @@ export const advSearchColumns = [
     name: 'AGR',
     sortable: true,
     minWidth: '2px',
-    selector: row => row.AGR
+    selector: row => row.agr
   },
   {
     name: 'EAU',
     sortable: true,
     minWidth: '2px',
-    selector: row => row.EAU
+    selector: row => row.eau
   },
   {
-    name: 'OnHand Invnetory',
+    name: 'On Hand Invnetory',
     sortable: true,
     minWidth: '50px',
-    selector: row => row.On_Hand_Inventory
+    selector: row => row.on_hand_inventory
   },
   {
     name: 'Drawing Number',
     sortable: true,
     minWidth: '50px',
-    selector: row => row.Drawing_Number
+    selector: row => row.drawing_number
+  },
+  {
+    name: 'Drawing Version',
+    sortable: true,
+    minWidth: '50px',
+    selector: row => row.drawing_revision
+  },
+  {
+    name: 'Assy. Item Status',
+    sortable: true,
+    minWidth: '100px',
+    selector: row => row.assy_item_status
+  },
+  {
+    name: 'Intellectual Owner',
+    sortable: true,
+    minWidth: '100px',
+    selector: row => row.plant
   }
-  // {
-  //   name: 'Drawing Version',
-  //   sortable: true,
-  //   minWidth: '50px',
-  //   selector: row => row.product_number
-  // },
-  // {
-  //   name: 'Assy. Item Status',
-  //   sortable: true,
-  //   minWidth: '100px',
-  //   selector: row => row.status
-  // },
-  // {
-  //   name: 'Intellectual Owner',
-  //   sortable: true,
-  //   minWidth: '100px',
-  //   selector: row => row.organization
-  // }
 ]
 // ** CSV Columns
 export const CsvDataColumns = [
   {
-    id: 'Product_Number',
+    id: 'product_number',
     displayName: 'Catalog/Product #'
   },
   {
-    id: 'Description',
+    id: 'description',
     displayName: 'Description'
   },
   {
-    id: 'AGR',
+    id: 'agr',
     name: 'AGR'
   },
   {
-    id: 'EAU',
+    id: 'eau',
     name: 'EAU'
   },
   {
-    id: 'On_Hand_Inventory',
+    id: 'on_hand_inventory',
     displayName: 'On Hand Inventory'
   },
-  // {
-  //   id: 'isCatalog',
-  //   displayName: 'Is Catalog'
-  // },
-  // {
-  //   id: 'item_type_mbp',
-  //   displayName: 'Item Type MBP'
-  // },
-  // {
-  //   id: 'organization',
-  //   displayName: 'Plant'
-  // },
+  {
+    id: 'drawing_number',
+    displayName: 'Drawing Number'
+  },
+  {
+    id: 'drawing_revision',
+    displayName: 'Drawing Version'
+  },
+  {
+    id: 'assy_item_status',
+    displayName: 'Assy. Item Status'
+  },
+  {
+    id: 'is_catalog',
+    displayName: 'Is Catalog'
+  },
+  {
+    id: 'plant',
+    displayName: 'Intellectual Owner'
+  }
   // {
   //   id: 'part_revision',
   //   displayName: 'Part Revision'
   // },
-  // {
-  //   id: 'status',
-  //   displayName: 'Status'
-  // },
+  
   // {
   //   id: 'std_cost_current',
   //   displayName: 'Standard Cost'
   // },
-  {
-    id: 'Drawing_Number',
-    displayName: 'Drawing Number'
-  }
 ]
 
 const ProductSearch = () => {
@@ -388,36 +394,24 @@ const ProductSearch = () => {
 
   // ** Function to handle Pagination
   const handlePagination = page => setCurrentPage(page.selected)
-  // const [searchData, setSearchData] = useState('')
+  const [searchData, setSearchData] = useState('')
 
   // ** SET CSV Data
   const onSetCSVData = (CsvData) => {
     const csvdata = []
     CsvData.map(item => {
       csvdata.push({
-        Product_Number: item.Product_Number,
-        Description: item.Description.replaceAll(',', ' '),
-        AGR: item.AGR,
-        EAU: item.EAU,
-        On_Hand_Inventory: item.On_Hand_Inventory,
-        Drawing_Number: item.Drawing_Number,
+        agr: item.agr,
+        assy_item_status: item.assy_item_status,
+        description: item.description.replaceAll(',', ' '),
+        drawing_number: item.drawing_number,
+        drawing_revision: item.drawing_revision,
+        eau: item.eau,
+        is_catalog: item.is_catalog,
+        on_hand_inventory: item.on_hand_inventory,
+        plant: item.plant,
+        product_number: item.product_number,
         _id: item._id
-        // agr: item.agr,
-        // description: item.description,
-        // eau: item.eau,
-        // inventory: item.inventory,
-        // isCatalog: item.isCatalog,
-        // item_type_mbp: item.item_type_mbp,
-        // name: item.name,
-        // organization: item.organization,
-        // part_revision: item.part_revision,
-        // product_number: item.product_number,
-        // status: item.status,
-        // std_cost_current: item.std_cost_current,
-        // weight: item.weight,
-        // _id: item._id,
-        // _key: item._key,
-        // _rev: item._rev
       })
     })
     setcsvData(csvdata)
@@ -429,12 +423,12 @@ const ProductSearch = () => {
       window.location.href = '/search/search'
     } else {
       const x = JSON.parse(atob(searchdata))
-      // setSearchData(x)
+      setSearchData(x)
       const url = GenerateUrl(x)
       if (url !== null) {
         const timer = setInterval(() => {
           setTimeTaken(timeTaken => timeTaken + 1)
-        }, 1)
+        }, 0.9)
         axios.get(url).then(response => {
           console.log(response)
           if (response.data?.result) {
@@ -512,8 +506,8 @@ const ProductSearch = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = data.filter(item => {
-        const productName = typeof item.Product_Number === "string" ? item.Product_Number : item.Product_Number.toString()
-        const includes = (productName.toLowerCase().includes(value.toLowerCase()) || item.Description.toLowerCase().includes(value.toLowerCase()))
+        const productName = typeof item.product_number === "string" ? item.product_number : item.product_number.toString()
+        const includes = (productName.toLowerCase().includes(value.toLowerCase()) || item.description.toLowerCase().includes(value.toLowerCase()))
 
         if (includes) {
           return includes
@@ -695,7 +689,6 @@ const ProductSearch = () => {
             <div className='text-center' style={{height: "80px"}}>
               <Spinner animation="border" variant="primary" style={{height: "70px", width: "70px", color: "blue"}}/>
             </div>
-            {/* <p>Loading.....</p> */}
           </ModalBody>
         </Modal>
       }
@@ -714,10 +707,6 @@ const ProductSearch = () => {
           <span> Product Search Results </span>
         </BreadcrumbItem>
       </Breadcrumb>
-      {/* { searchData !== '' && <p><b>search data</b>: Location Code: "{searchData.LocationCode}", Field Type: "{searchData.FieldType}", 
-      {searchData?.ProductNo !== undefined && <> Catalog/Product/Drawing/Part No : "{searchData.ProductNo}"</>}
-      {searchData?.ProductNo === undefined && <> Min: "{searchData.Min}"", Max: "{searchData.Max}"</>}
-      </p>} */}
       <Row className='match-height'>
         <Col sm='12'>
         <Card>
@@ -727,6 +716,11 @@ const ProductSearch = () => {
         <CardBody>
           <Row className='mt-1 mb-50 '>
             <p><b>Time Taken To Call API (milliseconds): </b>{timeTaken}</p>
+            { searchData !== '' && <p><b>Search Results For</b>: Location: "{searchData.LocationCode}", {searchData.FieldType === "" ? "Catalog/Product No: " :  `${searchData.FieldType}: ` }
+              {searchData?.ProductNo !== undefined && <> "{searchData.ProductNo}"</>}
+              {searchData?.ProductNo === undefined && <> Min: "{searchData.Min}" Max: "{searchData.Max}"</>}
+              </p>
+            }
           </Row>
           <Row className='mt-1 mb-50'>
             <Col lg='4' md='6' className='mb-1'>

@@ -122,13 +122,10 @@ const Search = () => {
   }
   const onChangeLocation = (e) => {
     setLocation(e.value)
-    if (location === "GLOBAL" && e.value !== "GLOBAL") {
+    if ((location === "GLOBAL" && e.value !== "GLOBAL") || (location !== "GLOBAL" && e.value === "GLOBAL")) {
       setField('')
       setProductNo('')
-    } else if (location !== "GLOBAL" && e.value === "GLOBAL") {
-      setField('')
-      setProductNo('')
-    }
+    } 
     setFieldErrMsg('')
     setLocationErrMsg('')
     setproductErrMsg('')
@@ -167,21 +164,15 @@ const Search = () => {
       setLocationErrMsg("Please choose the location!")
     }
     if (location === 'GLOBAL') {
-      if (arangoSearch) {
-        if (field === "") {
-          isValid = false
-          setFieldErrMsg("Please choose the field!")
-        }
-        if (productNo === "") {
-          isValid = false
-          if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
-          else if (field === "Description") setproductErrMsg("Please enter the description!")
-        }
-      } else {
-        if (productNo === '') {
-          isValid = false
-          setproductErrMsg("Please enter Catalog/Product/Part number!")
-        }
+      if (field === "") {
+        isValid = false
+        setFieldErrMsg("Please choose the field!")
+      }
+      if (productNo === "") {
+        isValid = false
+        if (field === "Catalog/ProductNo") setproductErrMsg("Please enter Catalog/Product/Part number!")
+        else if (field === "Description") setproductErrMsg("Please enter the description!")
+        else setproductErrMsg("Please enter the Catalog/Product/Part number or description!")
       }
     } else {
       if (field === "") {
@@ -228,6 +219,7 @@ const Search = () => {
     let searchData = {}
     if (location === 'GLOBAL') {
       searchData = {...searchData,
+        AragoSearch: arangoSearch,
         LocationCode: location,
         FieldType: field,
         ProductNo: productNo
@@ -297,7 +289,7 @@ const Search = () => {
                   <span className='text-danger'> {locationErrMsg}</span>
                 </div>
                 { (location === "GLOBAL") && <Fragment>
-                  { arangoSearch && <div className="col-md-6 mb-1">
+                  <div className="col-md-6 mb-1">
                     <label className='form-label'>  <span className='astrix'>*</span> Select Field</label>
                     <Select
                       theme={selectThemeColors}
@@ -309,21 +301,14 @@ const Search = () => {
                       isClearable={false}
                     />
                     <span className='text-danger'> {fieldErrMsg}</span>
-                  </div>}
-                  { arangoSearch && <div className="col-md-6 mb-1 mt-1">
+                  </div>
+                  <div className="col-md-6 mb-1 mt-1">
                     <label className='form-label w-100'>
                       <span className='astrix'>*</span> Catalog/Product/Part Number or Description<span className='f-10 float-right'>Solenoid Values only</span>
                     </label>
                     <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog/Product/Part Number or Description' onChange={onChangeCatelogProduct} />
                     <span className='text-danger'>{productErrMsg}</span>
-                  </div>}
-                  { !arangoSearch && <div className="col-md-6 mb-1 mt-1">
-                  <label className='form-label w-100'>
-                    <span className='astrix'>*</span> Catalog, Product, or  Part Number <span className='f-10 float-right'>Solenoid Values only</span>
-                  </label>
-                  <input type='text' id='fieldInput' className='form-control' value={productNo} placeholder='Enter Catalog, Product, or Part Number' onChange={onChangeCatelogProduct} />
-                  <span className='text-danger'>{productErrMsg}</span>
-                </div>}
+                  </div>
                 </Fragment>}
                 { (location !== "GLOBAL") && <Fragment>
                   <div className="col-md-6 mb-1">

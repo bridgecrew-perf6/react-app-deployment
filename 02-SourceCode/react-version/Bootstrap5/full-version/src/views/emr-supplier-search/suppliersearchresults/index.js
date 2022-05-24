@@ -1,4 +1,4 @@
-import { Fragment, useState, useEffect} from 'react'
+import { useState, useEffect} from 'react'
 import { Link } from 'react-router-dom'
 import axios from 'axios'
 import { ChevronDown, Download } from 'react-feather'
@@ -36,7 +36,7 @@ export const advSearchColumns = [
     name: 'Catalog/Product #',
     sortable: true,
     minWidth: '200px',
-    selector: row => row.PartNo
+    selector: row => row.product_number
   },
   {
     name: 'MPN',
@@ -45,33 +45,36 @@ export const advSearchColumns = [
     selector: row => row.MPN
   },
   // {
-  //   name: 'Intellectual Owner',
+  //   name: 'Assy. Item Status',
   //   sortable: true,
   //   minWidth: '50px',
-  //   selector: row => row.Part_Location
+  //   selector: row => {
+  //     if (row.status !== null) return row.status.toString()
+  //     else return row.status
+  //   }
   // },
   {
-    name: 'Assy. Item Status',
-    sortable: true,
-    minWidth: '50px',
-    selector: row => row.Status
-  },
-  {
-    name: 'Supplier',
+    name: 'Supplier Name',
     sortable: true,
     minWidth: '100px',
-    selector: row => row.Supplier
+    selector: row => row.supplier_name
+  },
+  {
+    name: 'supplier Site Name',
+    sortable: true,
+    minWidth: '100px',
+    selector: row => row.supplier_site_name
   },
   {
     name: 'Supplier Location',
     sortable: true,
-    minWidth: '100px',
+    minWidth: '50px',
     selector: row => row.Supplier_Location
   }
 ]
 export const CsvDataColumns = [
   {
-    id: 'PartNo',
+    id: 'product_number',
     displayName: 'Catalog/Product #'
   },
   {
@@ -79,16 +82,16 @@ export const CsvDataColumns = [
     displayName: 'MPN'
   },
   // {
-  //   id: 'Part_Location',
-  //   displayName: 'Intellectual Owner'
+  //   id: 'status',
+  //   name: 'Status'
   // },
   {
-    id: 'Status',
-    name: 'Status'
+    id: 'supplier_name',
+    name: 'Supplier name'
   },
   {
-    id: 'Supplier',
-    name: 'Supplier'
+    id: 'supplier_site_name',
+    displayName: 'Supplier Site Name'
   },
   {
     id: 'Supplier_Location',
@@ -113,14 +116,15 @@ const SupplierSearchResults = () => {
   const onSetCSVData = (CsvData) => {
     const csvdata = []
     CsvData.map(item => {
-      const  suplier = item.Supplier !== null ? item.Supplier.replaceAll(',', ' ') : item.Supplier
+      const  productNo = (item.product_number !== null && typeof item.product_number === "string") ? item.product_number.replaceAll(',', ' ') : item.product_number
+      const  suplier = (item.supplier_name !== null && typeof item.supplier_name === "string") ? item.supplier_name.replaceAll(',', ' ') : item.supplier_name
       const  suplierLoc = item.Supplier_Location !== null ? item.Supplier_Location.replaceAll(',', ' ') : item.Supplier_Location
       csvdata.push({
-        PartNo: item.PartNo,
+        product_number: productNo,
         MPN: item.MPN,
-        // Part_Location: item.Part_Location,
-        Status: item.Status,
-        Supplier: suplier,
+        // status: item.status === null ? item.status : item.status.toString(),
+        supplier_name: suplier,
+        supplier_site_name: item.supplier_site_name,
         Supplier_Location: suplierLoc
       })
     })
@@ -140,6 +144,7 @@ const SupplierSearchResults = () => {
           setTimeTaken(timeTaken => timeTaken + 1)
         }, 1)
         axios.get(url).then(response => {
+          console.log(response)
           if (response.data?.result) {
             setData(response.data.result._documents)
             onSetCSVData(response.data.result._documents)
@@ -149,7 +154,6 @@ const SupplierSearchResults = () => {
           }
           SetIsLoadingData(false)
           clearInterval(timer)
-          console.log(response)
         }).catch(err => {
           SetIsLoadingData(false)
           clearInterval(timer)
@@ -210,13 +214,13 @@ const SupplierSearchResults = () => {
     setSearchName(value)
     if (value.length) {
       updatedData = data.filter(item => {
-        const partno = typeof item.PartNo  === "string" ? item.PartNo : item.PartNo.toString()
+        const partno = typeof item.product_number  === "string" ? item.product_number : item.product_number.toString()
         const mpn = typeof item.MPN  === "string" ? item.MPN : item.MPN.toString()
         const includes = (partno.toLowerCase().includes(value.toLowerCase())  ||
         (item.MPN !== null && item.MPN !== "" && mpn.toLowerCase().includes(value.toLowerCase())) ||
-        // (item.Part_Location !== null && item.Part_Location !== "" && item.Part_Location.toLowerCase().includes(value.toLowerCase())) ||
-        (item.Status !== null && item.Status !== "" && item.Status.toLowerCase().includes(value.toLowerCase())) ||
-        (item.Supplier !== null && item.Supplier !== "" && item.Supplier.toLowerCase().includes(value.toLowerCase())) ||
+        // (item.status !== null && item.status !== "" && item.status.toString().includes(value.toLowerCase())) ||
+        (item.supplier_name !== null && item.supplier_name !== "" && item.supplier_name.toLowerCase().includes(value.toLowerCase())) ||
+        (item.supplier_site_name !== null && item.supplier_site_name !== "" && item.supplier_site_name.toLowerCase().includes(value.toLowerCase())) ||
         (item.Supplier_Location !== null && item.Supplier_Location !== "" && item.Supplier_Location.toLowerCase().includes(value.toLowerCase())))
 
         if (includes) {
