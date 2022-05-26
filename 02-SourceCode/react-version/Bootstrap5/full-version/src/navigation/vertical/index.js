@@ -8,10 +8,11 @@
 // import dashboards from './dashboards'
 // import uiElements from './ui-elements'
 import search  from './search'
-import productsearch from './productsearch'
-import graphviewer from './graphviewer'
+import supliersearch from './suppliersearch'
+import drawingsearch from './drawingsearch'
 
 // ** Merge & Export
 // export default [...dashboards, ...apps, ...pages, ...uiElements, ...forms, ...tables, ...charts, ...others, ...search, ...productsearch]
 
-export default [...search, ...productsearch, ...graphviewer]
+// export default [...search, ...productsearch, ...graphviewer]
+export default [...search, ...supliersearch, ...drawingsearch]

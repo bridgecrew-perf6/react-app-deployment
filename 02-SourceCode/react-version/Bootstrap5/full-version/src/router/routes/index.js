@@ -14,7 +14,10 @@ import PageLayoutsRoutes from './PageLayouts'
 import AuthenticationRoutes from './Authentication'
 import SearchRoutes from './Search'
 import ProductSearchRoutes from './ProductSearch'
-import GraphViewerRoutes from './GraphViewer'
+import WhereUsedRoutes from './Emr-WhereUsed'
+import ProductTreeRoutes from './Emr-ProductTree'
+import SupplierSearchRoutes from './Emr-SupplierSearch'
+import DrawingSearchRoutes from './Emr-DrawingSearch'
 
 // ** Layouts
 import BlankLayout from '@layouts/BlankLayout'
@@ -55,7 +58,10 @@ const Routes = [
   ...TablesRoutes,
   ...ChartsRoutes,
   ...ProductSearchRoutes,
-  ...GraphViewerRoutes
+  ...ProductTreeRoutes,
+  ...SupplierSearchRoutes,
+  ...WhereUsedRoutes,
+  ...DrawingSearchRoutes
   
 ]
 
